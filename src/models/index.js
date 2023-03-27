@@ -1,9 +1,21 @@
-const User = require("./user.model");
-const Role = require("./role.model");
-const ItemCategory = require("./itemCategory.model");
+// Config
+const Users = require("./Config/users.model");
+const Roles = require("./Config/roles.model");
+const ItemCategories = require("./Config/itemCategories.model");
+
+// Inventory
+const Stocks = require("./Inventory/stocks.model");
+const Guests = require("./Inventory/guests.model");
+const Suppliers = require("./Inventory/suppliers.model");
 
 module.exports = {
-	User,
-	Role,
-	ItemCategory,
+	// Config
+	Users,
+	Roles,
+	ItemCategories,
+
+	// Inventory
+	Stocks,
+	Guests,
+	Suppliers,
 };

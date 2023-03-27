@@ -1,24 +1,23 @@
-const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("../config/db.js");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../../config/db.js");
 
-const User = sequelize.define(
-	"User",
+const Users = sequelize.define(
+	"Users",
 	{
 		id: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.CHAR,
 			primaryKey: true,
-			autoIncrement: true,
 			allowNull: false,
 		},
-		userName: {
+		username: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
-		roleId: {
-			type: DataTypes.INTEGER,
+		role_id: {
+			type: DataTypes.CHAR,
 			allowNull: false,
 		},
-		fullName: {
+		fullname: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
@@ -38,15 +37,17 @@ const User = sequelize.define(
 			type: DataTypes.TEXT,
 			allowNull: false,
 		},
-		activeStatus: {
+		active_status: {
 			type: DataTypes.BOOLEAN,
+			allowNull: false,
 			defaultValue: true,
 		},
 	},
 	{
 		freezeTableName: true,
 		timestamps: true,
+		underscored: true,
 	}
 );
 
-module.exports = User;
+module.exports = Users;

@@ -10,7 +10,8 @@ console.log(process.env.APP_ENV);
 // Settings
 const sequelize = require("./src/config/db");
 // const routes = require("./src/routes");
-const { User, Role, ItemCategory } = require("./src/models/index.js");
+const { Users, Roles, ItemCategories, Stocks, Guests, Suppliers } = require("./src/models/index.js");
+const { uuid } = require("uuidv4");
 
 app.use(cors());
 app.use(express.json());
@@ -24,10 +25,16 @@ async function serverStart() {
 
 		// Sync Model Tabel
 		await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
-		await User.sync({ force: true });
-		await Role.sync({ force: true });
-		await ItemCategory.sync({ force: true });
+		await Users.sync({ force: true });
+		await Roles.sync({ force: true });
+		await ItemCategories.sync({ force: true });
+		await Stocks.sync({ force: true });
+		await Guests.sync({ force: true });
+		await Suppliers.sync({ force: true });
 		await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
+
+		// Tes
+		// Role.create({ roleName: "tes" });
 
 		// await User.sync({ alter: true });
 		console.log("All model were synchronized successfully");
