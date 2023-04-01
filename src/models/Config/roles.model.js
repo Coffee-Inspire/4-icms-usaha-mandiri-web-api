@@ -13,6 +13,7 @@ const Roles = sequelize.define(
 		role_name: {
 			type: DataTypes.STRING,
 			allowNull: false,
+			unique: true,
 		},
 		note: {
 			type: DataTypes.TEXT,

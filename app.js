@@ -9,13 +9,13 @@ console.log(process.env.APP_ENV);
 
 // Settings
 const sequelize = require("./src/config/db");
-// const routes = require("./src/routes");
+const routes = require("./src/routes");
 const { Users, Roles, ItemCategories, Stocks, Guests, Suppliers } = require("./src/models/index.js");
 const { uuid } = require("uuidv4");
 
 app.use(cors());
 app.use(express.json());
-// app.use(routes);
+app.use(routes);
 
 async function serverStart() {
 	try {

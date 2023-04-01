@@ -3,7 +3,7 @@ const sequelize = require("../../config/db.js");
 const Stocks = require("../Inventory/stocks.model");
 
 const ItemCategories = sequelize.define(
-	"item_categories",
+	"Item_categories",
 	{
 		id: {
 			type: DataTypes.CHAR,
