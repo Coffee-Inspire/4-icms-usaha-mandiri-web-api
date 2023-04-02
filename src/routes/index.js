@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 // Controller
-const usersRouter = require("./users.controller");
-const roleRouter = require("./roles.controller");
+const authRouter = require("./Auth/auth.controller");
+const usersRouter = require("./Config/users.controller");
+const roleRouter = require("./Config/roles.controller");
 
+router.use("/auth", authRouter);
 router.use("/user", usersRouter);
 router.use("/role", roleRouter);
 

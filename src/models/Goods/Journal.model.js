@@ -14,7 +14,6 @@ const Journal = sequelize.define(
 		},
 		reference_id: {
 			type: DataTypes.CHAR,
-			unique: true,
 			allowNull: false,
 		},
 		TYPE: {
@@ -29,6 +28,15 @@ const Journal = sequelize.define(
 			type: DataTypes.DECIMAL(15),
 			allowNull: false,
 		},
+	},
+	{
+		indexes: [
+			{
+				name: "reference_id",
+				unique: true,
+				fields: ["reference_id"],
+			},
+		],
 	},
 	{
 		freezeTableName: true,

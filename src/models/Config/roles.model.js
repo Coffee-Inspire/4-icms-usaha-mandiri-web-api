@@ -13,11 +13,19 @@ const Roles = sequelize.define(
 		role_name: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			unique: true,
 		},
 		note: {
 			type: DataTypes.TEXT,
 		},
+	},
+	{
+		indexes: [
+			{
+				name: "role_name",
+				unique: true,
+				fields: ["role_name"],
+			},
+		],
 	},
 	{
 		freezeTableName: true,
