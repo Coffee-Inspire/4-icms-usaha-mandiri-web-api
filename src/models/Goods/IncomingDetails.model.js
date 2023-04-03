@@ -33,12 +33,16 @@ const IncomingDetails = sequelize.define(
 			allowNull: false,
 		},
 		unit: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.CHAR,
 			allowNull: false,
 		},
 		total_amount: {
 			type: DataTypes.DECIMAL(15),
 			allowNull: false,
+		},
+		receive_remain: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
 		},
 	},
 	{

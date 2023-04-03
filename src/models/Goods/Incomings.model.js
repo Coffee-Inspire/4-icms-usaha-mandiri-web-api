@@ -21,6 +21,10 @@ const Incomings = sequelize.define(
 		note: {
 			type: DataTypes.TEXT,
 		},
+		status: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
 	},
 	{
 		freezeTableName: true,

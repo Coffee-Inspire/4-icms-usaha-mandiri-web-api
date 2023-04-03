@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../config/db.js");
 const IncomingDetails = require("../Goods/IncomingDetails.model");
-const OutgoingDetails = require("../Goods/OutgoingsDetails.model");
+const OutgoingDetails = require("../Goods/OutgoingDetails.model.js");
 
 const Stocks = sequelize.define(
 	"Stocks",
@@ -37,10 +37,10 @@ const Stocks = sequelize.define(
 			allowNull: false,
 		},
 		unit: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.CHAR,
 			allowNull: false,
 		},
-		hpp: {
+		price: {
 			type: DataTypes.DECIMAL(15),
 			allowNull: false,
 		},

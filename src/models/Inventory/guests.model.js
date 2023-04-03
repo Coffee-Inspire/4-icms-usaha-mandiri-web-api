@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../config/db.js");
-const OutgoingDetails = require("../Goods/OutgoingsDetails.model");
+const OutgoingDetails = require("../Goods/OutgoingDetails.model.js");
 
 const Guests = sequelize.define(
 	"Guests",

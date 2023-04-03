@@ -7,12 +7,24 @@ const Port = process.env.PORT || 3000;
 // Settings
 const sequelize = require("./src/config/db");
 const routes = require("./src/routes");
-const { Users, Roles, ItemCategories, Stocks, Guests, Suppliers } = require("./src/models/index.js");
+const {
+	Users,
+	Roles,
+	ItemCategories,
+	Stocks,
+	Guests,
+	Suppliers,
+	IncomingDetails,
+	Incoming,
+	OutgoingDetails,
+	Outgoing,
+	Journal,
+} = require("./src/models/index.js");
 // const { v4: uuid4 } = require("uuid");
 
 app.use(cors());
 app.use(express.json());
-app.use(routes);
+app.use("/icms-mandiri-api", routes);
 
 async function serverStart() {
 	try {
@@ -29,6 +41,11 @@ async function serverStart() {
 		// await Stocks.sync({ force: true });
 		// await Guests.sync({ force: true });
 		// await Suppliers.sync({ force: true });
+		// await IncomingDetails.sync({ force: true });
+		// await Incoming.sync({ force: true });
+		// await OutgoingDetails.sync({ force: true });
+		// await Outgoing.sync({ force: true });
+		// await Journal.sync({ force: true });
 
 		// Sync Table
 		await Users.sync({ alter: true });
@@ -37,6 +54,11 @@ async function serverStart() {
 		await Stocks.sync({ alter: true });
 		await Guests.sync({ alter: true });
 		await Suppliers.sync({ alter: true });
+		await IncomingDetails.sync({ alter: true });
+		await Incoming.sync({ alter: true });
+		await OutgoingDetails.sync({ alter: true });
+		await Outgoing.sync({ alter: true });
+		await Journal.sync({ alter: true });
 		await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
 
 		// Tes

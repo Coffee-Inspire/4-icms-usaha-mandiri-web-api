@@ -57,12 +57,12 @@ app.post("/login", (req, res) => {
 								errorStatusHandler(res, "No JWT KEY");
 							} else {
 								// Remove password
-								const { password, ...payload } = result;
-								jwt.sign({ payload }, privateKey, { algorithm: "RS256" }, (err, token) => {
+								const { password, ...payload } = result.get();
+								jwt.sign({ payload }, privateKey, (err, token) => {
 									if (err) {
 										errorStatusHandler(res, err);
 									} else {
-										successStatusHandler(res, token);
+										successStatusHandler(res, payload, { title: "token", data: token });
 									}
 								});
 							}

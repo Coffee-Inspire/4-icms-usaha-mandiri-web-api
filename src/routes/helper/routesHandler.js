@@ -8,11 +8,14 @@ const sendError = (msg, type) => {
 	};
 };
 
-const sendSuccess = (msg) => {
-	return {
-		message: "success",
-		data: msg,
-	};
+const sendSuccess = (msg, specialData) => {
+	let sendData = Object.assign(
+		{},
+		{ message: "success" },
+		{ data: msg },
+		specialData && { [specialData.title]: specialData.data }
+	);
+	return sendData;
 };
 
 // ===============================================================================
@@ -26,7 +29,7 @@ const errorStatusHandler = (res, e) => {
 			break;
 
 		default:
-			if (process.env.APP_ENV == "DEV") {
+			if (process.env.APP_ENV == "DEVz") {
 				console.log("Fatal Error : ", e);
 				res.status(500).send(sendError("Fatal Error", e));
 			} else {
@@ -38,8 +41,8 @@ const errorStatusHandler = (res, e) => {
 	return null;
 };
 
-const successStatusHandler = (res, data) => {
-	res.send(sendSuccess(data));
+const successStatusHandler = (res, data, specialData) => {
+	res.send(sendSuccess(data, specialData));
 	return null;
 };
 
