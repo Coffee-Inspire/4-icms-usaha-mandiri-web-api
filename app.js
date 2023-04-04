@@ -20,11 +20,10 @@ const {
 	Outgoing,
 	Journal,
 } = require("./src/models/index.js");
-// const { v4: uuid4 } = require("uuid");
 
 app.use(cors());
 app.use(express.json());
-app.use("/icms-mandiri-api", routes);
+app.use("/stageapi/icmsmandiri", routes);
 
 async function serverStart() {
 	try {
