@@ -10,6 +10,10 @@ const Incomings = sequelize.define(
 			primaryKey: true,
 			allowNull: false,
 		},
+		purchaseDate: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
 		incoming_no: {
 			type: DataTypes.STRING,
 			allowNull: false,

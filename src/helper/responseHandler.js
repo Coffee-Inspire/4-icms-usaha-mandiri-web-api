@@ -21,15 +21,22 @@ const sendSuccess = (msg, specialData) => {
 // ===============================================================================
 
 // Export Function
-const errorStatusHandler = (res, e) => {
-	switch (e?.errors?.[0]?.type) {
+const errorStatusHandler = (res, e, type) => {
+	let typeStatus = type ? type : e?.errors?.[0]?.type;
+	switch (typeStatus) {
+		// sequlize error
 		case "notNull Violation":
 		case "unique violation":
 			res.status(400).send(sendError(e.errors[0].message, e.errors[0].type));
 			break;
 
+		// auth error
+		case "no auth":
+			res.status(400).send(sendError("No Authorization / Invalid Authorization !"));
+			break;
+
 		default:
-			if (process.env.APP_ENV == "DEVz") {
+			if (process.env.APP_ENV == "DEV") {
 				console.log("Fatal Error : ", e);
 				res.status(500).send(sendError("Fatal Error", e));
 			} else {

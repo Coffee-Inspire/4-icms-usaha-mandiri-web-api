@@ -3,7 +3,7 @@ const { Users } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { errorStatusHandler, successStatusHandler } = require("../helper/routesHandler");
+const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 
 const app = express();
 
@@ -58,13 +58,22 @@ module.exports = {
 								} else {
 									// Remove password
 									const { password, ...payload } = result.get();
-									jwt.sign({ payload }, privateKey, (err, token) => {
-										if (err) {
-											errorStatusHandler(res, err);
-										} else {
-											successStatusHandler(res, payload, { title: "token", data: token });
+									// disabled exp
+									// exp 60 * 60 = 3600 (1 hour)
+									jwt.sign(
+										{
+											// exp: Math.floor(Date.now() / 1000) + 3600 * 3,
+											payload,
+										},
+										privateKey,
+										(err, token) => {
+											if (err) {
+												errorStatusHandler(res, err);
+											} else {
+												successStatusHandler(res, payload, { title: "token", data: token });
+											}
 										}
-									});
+									);
 								}
 							} else {
 								// IF COMPARE FALSE

@@ -9,6 +9,10 @@ const Journal = sequelize.define(
 			primaryKey: true,
 			allowNull: false,
 		},
+		transaction_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
 		note: {
 			type: DataTypes.TEXT,
 		},

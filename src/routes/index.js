@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const verifyToken = require("../middleware/auth.middleware");
 
 // Controller
 const authRouter = require("./Auth/auth.router");
@@ -7,8 +8,8 @@ const usersRouter = require("./Config/users.router");
 const roleRouter = require("./Config/roles.router");
 
 router.use("/auth", authRouter);
-router.use("/user", usersRouter);
-router.use("/role", roleRouter);
+router.use("/user", verifyToken, usersRouter);
+router.use("/role", verifyToken, roleRouter);
 
 // Develop Only
 router.use("/tHisFoRDevELoPeR/auth", authRouter);

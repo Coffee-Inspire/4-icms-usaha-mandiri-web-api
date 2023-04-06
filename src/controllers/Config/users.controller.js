@@ -1,7 +1,7 @@
 const express = require("express");
 const { Users } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
-const { errorStatusHandler, successStatusHandler } = require("../helper/routesHandler");
+const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 
 const app = express();
 
