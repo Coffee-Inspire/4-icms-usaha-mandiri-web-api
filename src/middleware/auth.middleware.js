@@ -12,7 +12,7 @@ const verifyToken = (req, res, next) => {
 
 	jwt.verify(token, privateKey, (err, decoded) => {
 		if (err) {
-			return errorStatusHandler(res, err);
+			return errorStatusHandler(res, "", "no auth");
 		} else {
 			// disabled exp time
 			// if (!decoded.exp) return errorStatusHandler(res, "", "no auth");
