@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
 	const token = header.split(" ")[1];
 	if (!token) return errorStatusHandler(res, "", "no auth");
 	const privateKey = process.env.JWT_KEY;
-	if (!privateKey) return errorStatusHandler(res, "No JWT KEY");
+	if (!privateKey) return errorStatusHandler(res, "Server Error no Auth Key");
 
 	jwt.verify(token, privateKey, (err, decoded) => {
 		if (err) {

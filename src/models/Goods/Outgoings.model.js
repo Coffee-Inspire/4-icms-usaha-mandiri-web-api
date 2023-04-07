@@ -3,7 +3,7 @@ const sequelize = require("../../config/db.js");
 const OutgoingDetails = require("./OutgoingDetails.model");
 
 const Outgoings = sequelize.define(
-	"Outgoings",
+	"outgoings",
 	{
 		id: {
 			type: DataTypes.CHAR,

@@ -44,7 +44,7 @@ module.exports = {
 			.then((result) => {
 				if (!result) {
 					// IF Data Empty
-					successStatusHandler(res, "User / Password Wrong");
+					successStatusHandler(res, "Mohon periksa kembali username dan password yang digunakan");
 				} else {
 					bcrypt.compare(password, result.password, (err, compareResult) => {
 						if (err) {
@@ -54,7 +54,7 @@ module.exports = {
 								// IF COMPARE TRUE
 								const privateKey = process.env.JWT_KEY;
 								if (!privateKey) {
-									errorStatusHandler(res, "No JWT KEY");
+									errorStatusHandler(res, "Server Error no Auth Key");
 								} else {
 									// Remove password
 									const { password, ...payload } = result.get();
@@ -77,7 +77,7 @@ module.exports = {
 								}
 							} else {
 								// IF COMPARE FALSE
-								successStatusHandler(res, "User / Password Wrong");
+								successStatusHandler(res, "Mohon periksa kembali username dan password yang digunakan");
 							}
 						}
 					});

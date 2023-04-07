@@ -17,6 +17,20 @@ module.exports = {
 			});
 	},
 
+	// Get Single Data
+	getOneByID: (req, res) => {
+		const id = req.params.id;
+		Roles.findOne({
+			where: { id },
+		})
+			.then((result) => {
+				successStatusHandler(res, result);
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
+	},
+
 	// Create Role
 	postCreateRole: (req, res) => {
 		Roles.create({

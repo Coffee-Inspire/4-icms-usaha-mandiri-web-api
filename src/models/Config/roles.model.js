@@ -3,7 +3,7 @@ const sequelize = require("../../config/db.js");
 const Users = require("./users.model");
 
 const Roles = sequelize.define(
-	"Roles",
+	"roles",
 	{
 		id: {
 			type: DataTypes.CHAR,

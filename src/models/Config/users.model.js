@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../config/db.js");
 
 const Users = sequelize.define(
-	"Users",
+	"users",
 	{
 		id: {
 			type: DataTypes.CHAR,

@@ -4,7 +4,7 @@ const Stocks = require("./stocks.model");
 const IncomingDetails = require("../Goods/IncomingDetails.model");
 
 const Suppliers = sequelize.define(
-	"Suppliers",
+	"suppliers",
 	{
 		id: {
 			type: DataTypes.CHAR,

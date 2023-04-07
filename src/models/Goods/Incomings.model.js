@@ -3,7 +3,7 @@ const sequelize = require("../../config/db.js");
 const IncomingDetails = require("./IncomingDetails.model");
 
 const Incomings = sequelize.define(
-	"Incomings",
+	"incomings",
 	{
 		id: {
 			type: DataTypes.CHAR,

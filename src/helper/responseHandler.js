@@ -32,13 +32,15 @@ const errorStatusHandler = (res, e, type) => {
 
 		// auth error
 		case "no auth":
-			res.status(400).send(sendError("No Authorization / Invalid Authorization !"));
+			res.status(403).send(sendError("No Authorization / Invalid Authorization !"));
 			break;
+		case "login_failed":
+			res.status(400).send(sendError("Mohon periksa kembali username dan password yang digunakan"));
 
 		default:
 			if (process.env.APP_ENV == "DEV") {
 				console.log("Fatal Error : ", e);
-				res.status(500).send(sendError("Fatal Error", e));
+				res.status(500).send(sendError("Developer Fatal Error", e));
 			} else {
 				res.status(500).send(sendError("Server Error"));
 			}
@@ -49,7 +51,11 @@ const errorStatusHandler = (res, e, type) => {
 };
 
 const successStatusHandler = (res, data, specialData) => {
-	res.send(sendSuccess(data, specialData));
+	if (!data) {
+		res.send(sendSuccess([], specialData));
+	} else {
+		res.send(sendSuccess(data, specialData));
+	}
 	return null;
 };
 
