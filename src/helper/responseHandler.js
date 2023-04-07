@@ -32,10 +32,11 @@ const errorStatusHandler = (res, e, type) => {
 
 		// auth error
 		case "no auth":
-			res.status(403).send(sendError("No Authorization / Invalid Authorization !"));
+			res.status(400).send(sendError("No Authorization / Invalid Authorization !"));
 			break;
 		case "login_failed":
-			res.status(400).send(sendError("Mohon periksa kembali username dan password yang digunakan"));
+			res.status(403).send(sendError("Mohon periksa kembali username dan password yang digunakan"));
+			break;
 
 		default:
 			if (process.env.APP_ENV == "DEV") {

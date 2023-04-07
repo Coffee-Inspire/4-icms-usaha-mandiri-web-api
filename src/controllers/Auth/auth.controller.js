@@ -44,7 +44,7 @@ module.exports = {
 			.then((result) => {
 				if (!result) {
 					// IF Data Empty
-					successStatusHandler(res, "Mohon periksa kembali username dan password yang digunakan");
+					errorStatusHandler(res, "", "login_failed");
 				} else {
 					bcrypt.compare(password, result.password, (err, compareResult) => {
 						if (err) {
@@ -77,7 +77,7 @@ module.exports = {
 								}
 							} else {
 								// IF COMPARE FALSE
-								successStatusHandler(res, "Mohon periksa kembali username dan password yang digunakan");
+								errorStatusHandler(res, "", "login_failed");
 							}
 						}
 					});
