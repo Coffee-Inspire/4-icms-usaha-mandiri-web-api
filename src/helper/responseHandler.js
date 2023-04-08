@@ -35,6 +35,10 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(403).send(sendError("No Authorization / Invalid Authorization !"));
 			break;
 
+		case "user_disabled":
+			res.status(403).send(sendError("Akun anda tidak aktif, mohon hubungi administrator"));
+			break;
+
 		case "login_failed":
 			res.status(403).send(sendError("Mohon periksa kembali username dan password yang digunakan"));
 			break;

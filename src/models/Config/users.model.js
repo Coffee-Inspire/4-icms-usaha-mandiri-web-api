@@ -40,7 +40,6 @@ const Users = sequelize.define(
 		active_status: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			defaultValue: true,
 		},
 	},
 	{

@@ -59,7 +59,11 @@ module.exports = {
 								} else {
 									// Remove password
 									const { password, ...payload } = result.get();
-									console.log(payload);
+
+									if (!payload.active_status) {
+										return errorStatusHandler(res, "", "user_disabled");
+									}
+
 									// disabled exp
 									// exp 60 * 60 = 3600 (1 hour)
 									jwt.sign(
@@ -92,7 +96,6 @@ module.exports = {
 
 	// Verify User
 	postVerify: (req, res) => {
-		console.log(req.body);
 		const token = req.body.token;
 		if (!token) return errorStatusHandler(res, "", "no auth");
 
