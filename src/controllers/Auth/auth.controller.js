@@ -1,5 +1,5 @@
 const express = require("express");
-const { Users } = require("../../models");
+const { Users, Roles } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -40,6 +40,7 @@ module.exports = {
 			where: {
 				username,
 			},
+			include: Roles,
 		})
 			.then((result) => {
 				if (!result) {
@@ -58,6 +59,7 @@ module.exports = {
 								} else {
 									// Remove password
 									const { password, ...payload } = result.get();
+									console.log(payload);
 									// disabled exp
 									// exp 60 * 60 = 3600 (1 hour)
 									jwt.sign(
@@ -86,5 +88,26 @@ module.exports = {
 			.catch((e) => {
 				errorStatusHandler(res, e);
 			});
+	},
+
+	// Verify User
+	postVerify: (req, res) => {
+		console.log(req.body);
+		const token = req.body.token;
+		if (!token) return errorStatusHandler(res, "", "no auth");
+
+		const privateKey = process.env.JWT_KEY;
+		if (!privateKey) return errorStatusHandler(res, "Server Error");
+
+		jwt.verify(token, privateKey, (err, decoded) => {
+			if (err) {
+				return errorStatusHandler(res, "", "no auth");
+			} else {
+				// disabled exp time
+				// if (!decoded.exp) return errorStatusHandler(res, "", "no auth");
+
+				successStatusHandler(res, decoded);
+			}
+		});
 	},
 };
