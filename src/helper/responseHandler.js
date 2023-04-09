@@ -43,6 +43,19 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(403).send(sendError("Mohon periksa kembali username dan password yang digunakan"));
 			break;
 
+		case "compare_failed":
+			res.status(403).send(sendError("Password salah"));
+			break;
+
+		// special case
+		case "missing_body":
+			res.status(400).send(sendError("Error, Missing require parameters"));
+			break;
+
+		case "not_found":
+			res.status(404).send(sendError("Data yang dicari tidak ada"));
+			break;
+
 		default:
 			if (process.env.APP_ENV == "DEV") {
 				console.log("Fatal Error : ", e);

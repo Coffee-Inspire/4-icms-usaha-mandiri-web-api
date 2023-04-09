@@ -49,6 +49,7 @@ module.exports = {
 				} else {
 					bcrypt.compare(password, result.password, (err, compareResult) => {
 						if (err) {
+							// IF Something error
 							errorStatusHandler(res, err);
 						} else {
 							if (compareResult) {
