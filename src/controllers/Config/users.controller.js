@@ -69,7 +69,7 @@ module.exports = {
 				errorStatusHandler(res, "", "not_found");
 			} else {
 				// IF ADMIN update
-				if (req?.payload?.payload?.role?.role_name === "Admin") {
+				if (req?.payload?.payload?.role?.role_name === "Administrator") {
 					if (passNew) {
 						hashNewPass();
 					} else {
