@@ -26,8 +26,6 @@ const Roles = sequelize.define(
 				fields: ["role_name"],
 			},
 		],
-	},
-	{
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,

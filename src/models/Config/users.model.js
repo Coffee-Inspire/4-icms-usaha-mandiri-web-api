@@ -50,8 +50,6 @@ const Users = sequelize.define(
 				fields: ["username", "email"],
 			},
 		],
-	},
-	{
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,

@@ -41,8 +41,6 @@ const Journal = sequelize.define(
 				fields: ["reference_id"],
 			},
 		],
-	},
-	{
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,

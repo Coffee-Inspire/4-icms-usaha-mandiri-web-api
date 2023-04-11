@@ -37,8 +37,8 @@ async function serverStart() {
 		// Sync Model Tabel
 		await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
 		// Rebuild Table (delete data)
-		// await Users.sync({ force: true });
 		// await Roles.sync({ force: true });
+		// await Users.sync({ force: true });
 		// await ItemCategories.sync({ force: true });
 		// await Stocks.sync({ force: true });
 		// await Guests.sync({ force: true });
@@ -50,8 +50,8 @@ async function serverStart() {
 		// await Journal.sync({ force: true });
 
 		// Sync Table
-		await Users.sync({ alter: true });
 		await Roles.sync({ alter: true });
+		await Users.sync({ alter: true });
 		await ItemCategories.sync({ alter: true });
 		await Stocks.sync({ alter: true });
 		await Guests.sync({ alter: true });

@@ -11,6 +11,7 @@ module.exports = {
 	getAllUser: (req, res) => {
 		Users.findAll({
 			include: Roles,
+			attributes: { exclude: ["password"] },
 		})
 			.then((result) => {
 				successStatusHandler(res, result);
@@ -26,6 +27,7 @@ module.exports = {
 		Users.findOne({
 			where: { id },
 			include: Roles,
+			attributes: { exclude: ["password"] },
 		})
 			.then((result) => {
 				successStatusHandler(res, result);
