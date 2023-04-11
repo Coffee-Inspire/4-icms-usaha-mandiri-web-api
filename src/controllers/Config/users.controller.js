@@ -23,7 +23,7 @@ module.exports = {
 
 	// Get Single Data
 	getOneByID: (req, res) => {
-		const id = req.params.id;
+		const { id } = req.query;
 		Users.findOne({
 			where: { id },
 			include: Roles,
@@ -94,5 +94,19 @@ module.exports = {
 				}
 			}
 		});
+	},
+
+	deleteData: (req, res) => {
+		const { id } = req.query;
+
+		Users.destroy({
+			where: { id },
+		})
+			.then((result) => {
+				successStatusHandler(res, "Success Delete");
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
 	},
 };
