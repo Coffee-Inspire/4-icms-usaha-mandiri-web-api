@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op, Model } = require("sequelize");
 const sequelize = require("../../config/db.js");
+const Roles = require("./roles.model.js");
 
 const Users = sequelize.define(
 	"users",
@@ -53,7 +54,49 @@ const Users = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					include: [
+						{
+							model: Roles,
+							where: {
+								[Op.or]: [{ role_name: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+					],
+					where: {
+						[Op.or]: [
+							{ username: { [Op.substring]: value } },
+							{ fullname: { [Op.substring]: value } },
+							{ email: { [Op.substring]: value } },
+							{ contact: { [Op.substring]: value } },
+							{ address: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
+
+Roles.hasMany(Users, {
+	foreignKey: {
+		name: "role_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+Users.belongsTo(Roles, {
+	foreignKey: {
+		name: "role_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
 
 module.exports = Users;

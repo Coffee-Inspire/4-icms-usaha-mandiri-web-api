@@ -23,11 +23,26 @@ const sendSuccess = (msg, specialData) => {
 // Export Function
 const errorStatusHandler = (res, e, type) => {
 	let typeStatus = type ? type : e?.errors?.[0]?.type;
+
+	console.log("Dev error type status ", typeStatus);
+	console.log("cek 1 ", e?.errors?.[0]?.type);
+	console.log("cek 2 ", e?.original?.code);
+
+	console.log("FULL ========================", e);
+
+	if (!typeStatus) {
+		typeStatus = e?.original?.code;
+	}
+
 	switch (typeStatus) {
 		// sequlize error
 		case "notNull Violation":
 		case "unique violation":
 			res.status(400).send(sendError(e.errors[0].message, e.errors[0].type));
+			break;
+
+		case "ER_BAD_FIELD_ERROR":
+			res.status(400).send(sendError("Error, you search for unknown field !"));
 			break;
 
 		// auth error

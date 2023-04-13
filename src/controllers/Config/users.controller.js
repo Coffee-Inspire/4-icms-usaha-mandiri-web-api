@@ -3,18 +3,57 @@ const { Users, Roles } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
+const { paginationHandler } = require("../../helper/paginationHandler");
+const sequelize = require("../../config/db");
+const { Op } = require("sequelize");
 
 const app = express();
 
 module.exports = {
 	// Get All Data
 	getAllUser: (req, res) => {
-		Users.findAll({
-			include: Roles,
-			attributes: { exclude: ["password"] },
-		})
-			.then((result) => {
-				successStatusHandler(res, result);
+		const { page, limit, sort, filter, search } = req.query;
+
+		paginationHandler(Users, page, limit, sort, filter, search)
+			.then((paginate) => {
+				console.log(paginate);
+
+				Users.scope({ method: ["search", search] })
+					.findAll({
+						attributes: { exclude: ["password"] },
+						order: [[paginate.filter, paginate.sort]],
+						limit: paginate.limit,
+						offset: paginate.offset,
+						// include: [{ model: Roles.scope({ method: ["searchUser", search] }) }],
+					})
+					.then((result) => {
+						successStatusHandler(res, result, {
+							title: "dataLength",
+							data: paginate.dataLength,
+						});
+					})
+					.catch((e) => {
+						errorStatusHandler(res, e);
+					});
+
+				// Users.findAll({
+				// 	include: Roles,
+				// 	attributes: { exclude: ["password"] },
+				// 	order: [[paginate.filter, paginate.sort]],
+				// 	limit: paginate.limit,
+				// 	offset: paginate.offset,
+				// })
+				// 	.then((result) => {
+				// 		console.log("Data : ", result.length);
+				// 		successStatusHandler(res, result, {
+				// 			title: "dataLength",
+				// 			data: paginate.dataLength,
+				// 		});
+				// 	})
+				// 	.catch((e) => {
+				// 		// res.send(e);
+				// 		errorStatusHandler(res, e);
+				// 	});
 			})
 			.catch((e) => {
 				errorStatusHandler(res, e);
