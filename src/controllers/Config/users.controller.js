@@ -16,44 +16,43 @@ module.exports = {
 
 		paginationHandler(Users, page, limit, sort, filter, search)
 			.then((paginate) => {
-				console.log(paginate);
-
-				Users.scope({ method: ["search", search] })
-					.findAll({
+				if (paginate.search === "") {
+					Users.findAll({
+						include: Roles,
 						attributes: { exclude: ["password"] },
 						order: [[paginate.filter, paginate.sort]],
 						limit: paginate.limit,
 						offset: paginate.offset,
-						// include: [{ model: Roles.scope({ method: ["searchUser", search] }) }],
 					})
-					.then((result) => {
-						successStatusHandler(res, result, {
-							title: "dataLength",
-							data: paginate.dataLength,
+						.then((result) => {
+							console.log("Data : ", result.length);
+							successStatusHandler(res, result, {
+								title: "dataLength",
+								data: paginate.dataLength,
+							});
+						})
+						.catch((e) => {
+							// res.send(e);
+							errorStatusHandler(res, e);
 						});
-					})
-					.catch((e) => {
-						errorStatusHandler(res, e);
-					});
-
-				// Users.findAll({
-				// 	include: Roles,
-				// 	attributes: { exclude: ["password"] },
-				// 	order: [[paginate.filter, paginate.sort]],
-				// 	limit: paginate.limit,
-				// 	offset: paginate.offset,
-				// })
-				// 	.then((result) => {
-				// 		console.log("Data : ", result.length);
-				// 		successStatusHandler(res, result, {
-				// 			title: "dataLength",
-				// 			data: paginate.dataLength,
-				// 		});
-				// 	})
-				// 	.catch((e) => {
-				// 		// res.send(e);
-				// 		errorStatusHandler(res, e);
-				// 	});
+				} else {
+					Users.scope({ method: ["search", search] })
+						.findAll({
+							attributes: { exclude: ["password"] },
+							order: [[paginate.filter, paginate.sort]],
+							limit: paginate.limit,
+							offset: paginate.offset,
+						})
+						.then((result) => {
+							successStatusHandler(res, result, {
+								title: "dataLength",
+								data: paginate.dataLength,
+							});
+						})
+						.catch((e) => {
+							errorStatusHandler(res, e);
+						});
+				}
 			})
 			.catch((e) => {
 				errorStatusHandler(res, e);
