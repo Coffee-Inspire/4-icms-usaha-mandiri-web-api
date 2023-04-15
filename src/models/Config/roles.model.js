@@ -1,6 +1,5 @@
 const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
-const Users = require("./users.model");
 
 const Roles = sequelize.define(
 	"roles",
@@ -29,15 +28,7 @@ const Roles = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
-		scopes: {
-			searchUser(value) {
-				return {
-					where: {
-						[Op.or]: [{ role_name: { [Op.substring]: value } }],
-					},
-				};
-			},
-		},
+		scopes: {},
 	}
 );
 

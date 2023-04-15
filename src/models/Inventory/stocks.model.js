@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../config/db.js");
+const ItemCategories = require("../Config/itemCategories.model.js");
 const IncomingDetails = require("../Goods/IncomingDetails.model");
 const OutgoingDetails = require("../Goods/OutgoingDetails.model.js");
 
@@ -46,11 +47,30 @@ const Stocks = sequelize.define(
 		},
 	},
 	{
+		indexes: [],
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
 	}
 );
+
+ItemCategories.hasMany(Stocks, {
+	foreignKey: {
+		name: "category_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+Stocks.belongsTo(ItemCategories, {
+	foreignKey: {
+		name: "category_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
 
 Stocks.hasMany(IncomingDetails, {
 	foreignKey: {

@@ -4,59 +4,38 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
-const sequelize = require("../../config/db");
-const { Op } = require("sequelize");
-
-const app = express();
 
 module.exports = {
 	// Get All Data
-	getAllUser: (req, res) => {
-		const { page, limit, sort, filter, search } = req.query;
+	getAllUser: async (req, res) => {
+		try {
+			const { page, limit, sort, filter, search } = req.query;
+			const paginate = await paginationHandler(Users, page, limit, sort, filter, search);
 
-		paginationHandler(Users, page, limit, sort, filter, search)
-			.then((paginate) => {
-				if (paginate.search === "") {
-					Users.findAll({
-						include: Roles,
-						attributes: { exclude: ["password"] },
-						order: [[paginate.filter, paginate.sort]],
-						limit: paginate.limit,
-						offset: paginate.offset,
-					})
-						.then((result) => {
-							console.log("Data : ", result.length);
-							successStatusHandler(res, result, {
-								title: "dataLength",
-								data: paginate.dataLength,
-							});
-						})
-						.catch((e) => {
-							// res.send(e);
-							errorStatusHandler(res, e);
-						});
-				} else {
-					Users.scope({ method: ["search", search] })
-						.findAll({
+			const result =
+				paginate.search === ""
+					? await Users.findAll({
+							include: Roles,
 							attributes: { exclude: ["password"] },
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
-						})
-						.then((result) => {
-							successStatusHandler(res, result, {
-								title: "dataLength",
-								data: paginate.dataLength,
-							});
-						})
-						.catch((e) => {
-							errorStatusHandler(res, e);
-						});
-				}
-			})
-			.catch((e) => {
-				errorStatusHandler(res, e);
+					  })
+					: await Users.scope({ method: ["search", search] }).findAll({
+							include: Roles,
+							attributes: { exclude: ["password"] },
+							order: [[paginate.filter, paginate.sort]],
+							limit: paginate.limit,
+							offset: paginate.offset,
+					  });
+
+			successStatusHandler(res, result, {
+				title: "dataLength",
+				data: paginate.dataLength,
 			});
+		} catch (e) {
+			errorStatusHandler(res, e);
+		}
 	},
 
 	// Get Single Data

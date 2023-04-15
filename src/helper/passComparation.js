@@ -8,7 +8,6 @@ const passwordCompare = (dataToCompare, password) => {
 		}
 
 		if (compareResult) {
-			console.log("func error ?", compareResult);
 			return true;
 		} else {
 			errorStatusHandler(res, "", "login_failed");

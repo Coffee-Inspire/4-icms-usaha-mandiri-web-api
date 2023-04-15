@@ -1,6 +1,5 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
-const Stocks = require("../Inventory/stocks.model");
 
 const ItemCategories = sequelize.define(
 	"Item_categories",
@@ -19,28 +18,26 @@ const ItemCategories = sequelize.define(
 		},
 	},
 	{
+		indexes: [
+			{
+				name: "category_name",
+				unique: true,
+				fields: ["category_name"],
+			},
+		],
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					where: {
+						[Op.or]: [{ category_name: { [Op.substring]: value } }, { note: { [Op.substring]: value } }],
+					},
+				};
+			},
+		},
 	}
 );
-
-ItemCategories.hasMany(Stocks, {
-	foreignKey: {
-		name: "category_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-Stocks.belongsTo(ItemCategories, {
-	foreignKey: {
-		name: "category_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
 
 module.exports = ItemCategories;

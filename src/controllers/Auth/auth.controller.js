@@ -5,8 +5,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 
-const app = express();
-
 module.exports = {
 	// Create User / REGISTER
 	postCreateUser: (req, res) => {

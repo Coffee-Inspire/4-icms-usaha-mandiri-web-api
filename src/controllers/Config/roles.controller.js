@@ -3,8 +3,6 @@ const { Roles } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 
-const app = express();
-
 module.exports = {
 	// Get All Data
 	getAllRole: (req, res) => {
@@ -19,7 +17,7 @@ module.exports = {
 
 	// Get Single Data
 	getOneByID: (req, res) => {
-		const id = req.params.id;
+		const { id } = req.query;
 		Roles.findOne({
 			where: { id },
 		})
