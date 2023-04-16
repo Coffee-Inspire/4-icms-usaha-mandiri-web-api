@@ -1,4 +1,3 @@
-const express = require("express");
 const { Roles } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");

@@ -1,6 +1,5 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
-const IncomingDetails = require("./IncomingDetails.model");
 
 const Incomings = sequelize.define(
 	"incomings",
@@ -36,23 +35,5 @@ const Incomings = sequelize.define(
 		underscored: true,
 	}
 );
-
-Incomings.hasMany(IncomingDetails, {
-	foreignKey: {
-		name: "incoming_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-IncomingDetails.belongsTo(Incomings, {
-	foreignKey: {
-		name: "incoming_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
 
 module.exports = Incomings;

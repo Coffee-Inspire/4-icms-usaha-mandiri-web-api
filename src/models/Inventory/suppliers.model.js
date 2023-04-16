@@ -1,7 +1,5 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
-const Stocks = require("./stocks.model");
-const IncomingDetails = require("../Goods/IncomingDetails.model");
 
 const Suppliers = sequelize.define(
 	"suppliers",
@@ -41,43 +39,22 @@ const Suppliers = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					where: {
+						[Op.or]: [
+							{ supplier_name: { [Op.substring]: value } },
+							{ person_contact: { [Op.substring]: value } },
+							{ company_contact: { [Op.substring]: value } },
+							{ email: { [Op.substring]: value } },
+							{ address: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
-
-Suppliers.hasMany(Stocks, {
-	foreignKey: {
-		name: "supplier_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-Stocks.belongsTo(Suppliers, {
-	foreignKey: {
-		name: "supplier_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-Suppliers.hasMany(IncomingDetails, {
-	foreignKey: {
-		name: "supplier_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-IncomingDetails.belongsTo(Suppliers, {
-	foreignKey: {
-		name: "supplier_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
 
 module.exports = Suppliers;

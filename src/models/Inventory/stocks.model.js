@@ -1,8 +1,7 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
+const Suppliers = require("./suppliers.model.js");
 const ItemCategories = require("../Config/itemCategories.model.js");
-const IncomingDetails = require("../Goods/IncomingDetails.model");
-const OutgoingDetails = require("../Goods/OutgoingDetails.model.js");
 
 const Stocks = sequelize.define(
 	"stocks",
@@ -51,8 +50,59 @@ const Stocks = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					include: [
+						{
+							model: ItemCategories,
+							where: {
+								[Op.or]: [{ category_name: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+						{
+							model: Suppliers,
+							where: {
+								[Op.or]: [{ supplier_name: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+					],
+					where: {
+						[Op.or]: [
+							{ item_name: { [Op.substring]: value } },
+							{ note: { [Op.substring]: value } },
+							{ last_order_date: { [Op.substring]: value } },
+							{ last_restock_date: { [Op.substring]: value } },
+							{ qty: { [Op.substring]: value } },
+							{ unit: { [Op.substring]: value } },
+							{ price: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
+
+Suppliers.hasMany(Stocks, {
+	foreignKey: {
+		name: "supplier_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+Stocks.belongsTo(Suppliers, {
+	foreignKey: {
+		name: "supplier_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
 
 ItemCategories.hasMany(Stocks, {
 	foreignKey: {
@@ -66,42 +116,6 @@ ItemCategories.hasMany(Stocks, {
 Stocks.belongsTo(ItemCategories, {
 	foreignKey: {
 		name: "category_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-Stocks.hasMany(IncomingDetails, {
-	foreignKey: {
-		name: "stock_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-IncomingDetails.belongsTo(Stocks, {
-	foreignKey: {
-		name: "stock_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-Stocks.hasMany(OutgoingDetails, {
-	foreignKey: {
-		name: "stock_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-OutgoingDetails.belongsTo(Stocks, {
-	foreignKey: {
-		name: "stock_id",
 		allowNull: false,
 		freezeTableName: true,
 		underscored: true,

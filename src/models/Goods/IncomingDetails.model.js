@@ -1,5 +1,8 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
+const Suppliers = require("../Inventory/suppliers.model.js");
+const Stocks = require("../Inventory/stocks.model.js");
+const Incomings = require("./Incomings.model.js");
 
 const IncomingDetails = sequelize.define(
 	"incoming_details",
@@ -51,5 +54,59 @@ const IncomingDetails = sequelize.define(
 		underscored: true,
 	}
 );
+
+Suppliers.hasMany(IncomingDetails, {
+	foreignKey: {
+		name: "supplier_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+IncomingDetails.belongsTo(Suppliers, {
+	foreignKey: {
+		name: "supplier_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+Stocks.hasMany(IncomingDetails, {
+	foreignKey: {
+		name: "stock_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+IncomingDetails.belongsTo(Stocks, {
+	foreignKey: {
+		name: "stock_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+Incomings.hasMany(IncomingDetails, {
+	foreignKey: {
+		name: "incoming_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+IncomingDetails.belongsTo(Incomings, {
+	foreignKey: {
+		name: "incoming_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
 
 module.exports = IncomingDetails;

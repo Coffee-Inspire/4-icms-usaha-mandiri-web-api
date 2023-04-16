@@ -1,6 +1,4 @@
-const express = require("express");
 const { Users, Roles } = require("../../models");
-const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
@@ -42,8 +40,8 @@ module.exports = {
 	getOneByID: (req, res) => {
 		const { id } = req.query;
 		Users.findOne({
-			where: { id },
 			include: Roles,
+			where: { id },
 			attributes: { exclude: ["password"] },
 		})
 			.then((result) => {

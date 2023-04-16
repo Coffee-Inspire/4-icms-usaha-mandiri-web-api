@@ -1,4 +1,4 @@
-const { ItemCategories } = require("../../models");
+const { Stocks, ItemCategories, Suppliers } = require("../../models");
 const { v4: uuidv4 } = require("uuid");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
@@ -8,16 +8,18 @@ module.exports = {
 	getAllRole: async (req, res) => {
 		try {
 			const { page, limit, sort, filter, search } = req.query;
-			const paginate = await paginationHandler(ItemCategories, page, limit, sort, filter, search);
+			const paginate = await paginationHandler(Stocks, page, limit, sort, filter, search);
 
 			const result =
 				paginate.search === ""
-					? await ItemCategories.findAll({
+					? await Stocks.findAll({
+							include: [ItemCategories, Suppliers],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await ItemCategories.scope({ method: ["search", search] }).findAll({
+					: await Stocks.scope({ method: ["search", search] }).findAll({
+							include: [ItemCategories, Suppliers],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
@@ -35,7 +37,8 @@ module.exports = {
 	// Get Single Data
 	getOneByID: (req, res) => {
 		const { id } = req.query;
-		ItemCategories.findOne({
+		Stocks.findOne({
+			include: [ItemCategories, Suppliers],
 			where: { id },
 		})
 			.then((result) => {
@@ -48,7 +51,7 @@ module.exports = {
 
 	// Create Role
 	postCreate: (req, res) => {
-		ItemCategories.create({
+		Stocks.create({
 			...req.body,
 			id: uuidv4(),
 		})
@@ -66,11 +69,11 @@ module.exports = {
 
 		if (!id) return errorStatusHandler(res, "", "missing_body");
 
-		ItemCategories.findOne({ where: { id } }).then((result) => {
+		Stocks.findOne({ where: { id } }).then((result) => {
 			if (!result) {
 				errorStatusHandler(res, "", "not_found");
 			} else {
-				ItemCategories.update({ ...req.body }, { where: { id } })
+				Stocks.update({ ...req.body }, { where: { id } })
 					.then((result) => {
 						successStatusHandler(res, "Success Update");
 					})
@@ -84,7 +87,7 @@ module.exports = {
 	deleteData: (req, res) => {
 		const { id } = req.query;
 
-		ItemCategories.destroy({
+		Stocks.destroy({
 			where: { id },
 		})
 			.then((result) => {

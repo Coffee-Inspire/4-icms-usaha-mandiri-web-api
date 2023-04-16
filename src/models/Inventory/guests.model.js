@@ -1,6 +1,5 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
-const OutgoingDetails = require("../Goods/OutgoingDetails.model.js");
 
 const Guests = sequelize.define(
 	"guests",
@@ -31,25 +30,21 @@ const Guests = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					where: {
+						[Op.or]: [
+							{ guest_name: { [Op.substring]: value } },
+							{ contact: { [Op.substring]: value } },
+							{ email: { [Op.substring]: value } },
+							{ address: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
-
-Guests.hasMany(OutgoingDetails, {
-	foreignKey: {
-		name: "guest_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
-
-OutgoingDetails.belongsTo(Guests, {
-	foreignKey: {
-		name: "guest_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
-	},
-});
 
 module.exports = Guests;

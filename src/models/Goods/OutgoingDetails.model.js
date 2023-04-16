@@ -1,5 +1,7 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
+const Stocks = require("../Inventory/stocks.model.js");
+const Outgoings = require("./Outgoings.model.js");
 
 const OutgoingDetails = sequelize.define(
 	"outgoing_details",
@@ -36,5 +38,41 @@ const OutgoingDetails = sequelize.define(
 		underscored: true,
 	}
 );
+
+Stocks.hasMany(OutgoingDetails, {
+	foreignKey: {
+		name: "stock_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+OutgoingDetails.belongsTo(Stocks, {
+	foreignKey: {
+		name: "stock_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+Outgoings.hasMany(OutgoingDetails, {
+	foreignKey: {
+		name: "outgoing_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
+
+OutgoingDetails.belongsTo(Outgoings, {
+	foreignKey: {
+		name: "outgoing_id",
+		allowNull: false,
+		freezeTableName: true,
+		underscored: true,
+	},
+});
 
 module.exports = OutgoingDetails;

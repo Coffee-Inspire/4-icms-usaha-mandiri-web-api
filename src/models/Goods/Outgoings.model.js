@@ -1,6 +1,6 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
-const OutgoingDetails = require("./OutgoingDetails.model");
+const Guests = require("../Inventory/guests.model.js");
 
 const Outgoings = sequelize.define(
 	"outgoings",
@@ -33,18 +33,18 @@ const Outgoings = sequelize.define(
 	}
 );
 
-Outgoings.hasMany(OutgoingDetails, {
+Guests.hasMany(Outgoings, {
 	foreignKey: {
-		name: "outgoing_id",
+		name: "guest_id",
 		allowNull: false,
 		freezeTableName: true,
 		underscored: true,
 	},
 });
 
-OutgoingDetails.belongsTo(Outgoings, {
+Outgoings.belongsTo(Guests, {
 	foreignKey: {
-		name: "outgoing_id",
+		name: "guest_id",
 		allowNull: false,
 		freezeTableName: true,
 		underscored: true,
