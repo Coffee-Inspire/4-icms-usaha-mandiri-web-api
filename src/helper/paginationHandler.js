@@ -1,7 +1,7 @@
 const sequelize = require("../config/db");
 
 const paginationHandler = async (model, page = 1, limit = 10, sort = "DESC", filter = "created_at", search = "") => {
-	const dataLength = await model.count({});
+	// const dataLength = await model.count({});
 	const offset = (page - 1) * limit;
 
 	sort = sort === "old" ? "ASC" : "DESC";
@@ -13,7 +13,6 @@ const paginationHandler = async (model, page = 1, limit = 10, sort = "DESC", fil
 		sort,
 		filter,
 		search,
-		dataLength,
 	};
 };
 

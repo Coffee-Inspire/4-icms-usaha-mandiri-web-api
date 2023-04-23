@@ -15,12 +15,13 @@ const Journal = sequelize.define(
 		},
 		note: {
 			type: DataTypes.TEXT,
+			allowNull: false,
 		},
 		reference_id: {
 			type: DataTypes.CHAR,
 			allowNull: false,
 		},
-		TYPE: {
+		type: {
 			type: DataTypes.CHAR,
 			allowNull: false,
 		},

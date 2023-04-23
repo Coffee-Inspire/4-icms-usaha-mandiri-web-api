@@ -12,23 +12,20 @@ module.exports = {
 
 			const result =
 				paginate.search === ""
-					? await Stocks.findAll({
+					? await Stocks.findAndCountAll({
 							include: [ItemCategories, Suppliers],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await Stocks.scope({ method: ["search", search] }).findAll({
+					: await Stocks.scope({ method: ["search", search] }).findAndCountAll({
 							include: [ItemCategories, Suppliers],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  });
 
-			successStatusHandler(res, result, {
-				title: "dataLength",
-				data: paginate.dataLength,
-			});
+			successStatusHandler(res, result);
 		} catch (e) {
 			errorStatusHandler(res, e);
 		}

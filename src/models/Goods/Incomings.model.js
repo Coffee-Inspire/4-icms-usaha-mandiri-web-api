@@ -26,10 +26,16 @@ const Incomings = sequelize.define(
 		},
 		status: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
 		},
 	},
 	{
+		indexes: [
+			{
+				name: "incoming_no",
+				unique: true,
+				fields: ["incoming_no"],
+			},
+		],
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,

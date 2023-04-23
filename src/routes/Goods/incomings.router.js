@@ -11,8 +11,8 @@ const {
 
 router.get("/", getAllRole);
 router.get("/id", getOneByID);
-// router.post("/create", postCreate);
+router.post("/create", postCreate);
 router.put("/update", putUpdateData);
-// router.delete("/delete", deleteData);
+router.delete("/delete", deleteData);
 
 module.exports = router;

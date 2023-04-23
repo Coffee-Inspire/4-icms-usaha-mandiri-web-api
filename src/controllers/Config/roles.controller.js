@@ -5,7 +5,7 @@ const { errorStatusHandler, successStatusHandler } = require("../../helper/respo
 module.exports = {
 	// Get All Data
 	getAllRole: (req, res) => {
-		Roles.findAll({})
+		Roles.findAndCountAll({})
 			.then((result) => {
 				successStatusHandler(res, result);
 			})

@@ -12,21 +12,18 @@ module.exports = {
 
 			const result =
 				paginate.search === ""
-					? await ItemCategories.findAll({
+					? await ItemCategories.findAndCountAll({
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await ItemCategories.scope({ method: ["search", search] }).findAll({
+					: await ItemCategories.scope({ method: ["search", search] }).findAndCountAll({
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  });
 
-			successStatusHandler(res, result, {
-				title: "dataLength",
-				data: paginate.dataLength,
-			});
+			successStatusHandler(res, result);
 		} catch (e) {
 			errorStatusHandler(res, e);
 		}

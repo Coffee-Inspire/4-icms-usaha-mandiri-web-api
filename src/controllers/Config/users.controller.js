@@ -12,14 +12,14 @@ module.exports = {
 
 			const result =
 				paginate.search === ""
-					? await Users.findAll({
+					? await Users.findAndCountAll({
 							include: Roles,
 							attributes: { exclude: ["password"] },
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await Users.scope({ method: ["search", search] }).findAll({
+					: await Users.scope({ method: ["search", search] }).findAndCountAll({
 							include: Roles,
 							attributes: { exclude: ["password"] },
 							order: [[paginate.filter, paginate.sort]],
@@ -27,10 +27,7 @@ module.exports = {
 							offset: paginate.offset,
 					  });
 
-			successStatusHandler(res, result, {
-				title: "dataLength",
-				data: paginate.dataLength,
-			});
+			successStatusHandler(res, result);
 		} catch (e) {
 			errorStatusHandler(res, e);
 		}
