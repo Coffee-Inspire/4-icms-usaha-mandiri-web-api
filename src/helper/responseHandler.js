@@ -64,11 +64,15 @@ const errorStatusHandler = (res, e, type) => {
 
 		// special case
 		case "missing_body":
-			res.status(400).send(sendError("Error, Missing require parameters"));
+			res.status(400).send(sendError("Error, Inputan data yang dibutuhkan kurang"));
 			break;
 
 		case "not_found":
 			res.status(404).send(sendError("Data yang dicari tidak ada"));
+			break;
+
+		case "delete_failed":
+			res.status(404).send(sendError("Error, Tidak ada data untuk dihapus"));
 			break;
 
 		default:

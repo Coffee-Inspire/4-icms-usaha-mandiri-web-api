@@ -85,7 +85,11 @@ module.exports = {
 			where: { id },
 		})
 			.then((result) => {
-				successStatusHandler(res, "Success Delete");
+				if (result === 1) {
+					successStatusHandler(res, "Success Delete");
+				} else {
+					errorStatusHandler(res, "", "delete_failed");
+				}
 			})
 			.catch((e) => {
 				errorStatusHandler(res, e);

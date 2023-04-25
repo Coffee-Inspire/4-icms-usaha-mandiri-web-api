@@ -44,6 +44,10 @@ const Stocks = sequelize.define(
 			type: DataTypes.DECIMAL(15),
 			allowNull: false,
 		},
+		purchase_price: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
 	},
 	{
 		indexes: [],

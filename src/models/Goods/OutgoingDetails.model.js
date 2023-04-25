@@ -31,6 +31,10 @@ const OutgoingDetails = sequelize.define(
 			type: DataTypes.DECIMAL(15),
 			allowNull: false,
 		},
+		unit: {
+			type: DataTypes.CHAR,
+			allowNull: false,
+		},
 	},
 	{
 		freezeTableName: true,

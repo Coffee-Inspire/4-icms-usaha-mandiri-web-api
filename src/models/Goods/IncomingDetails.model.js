@@ -47,6 +47,10 @@ const IncomingDetails = sequelize.define(
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		},
+		purchase_price: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
 	},
 	{
 		freezeTableName: true,
