@@ -1,7 +1,7 @@
 const { Incoming, IncomingDetails, Stocks, Journal } = require("../../models");
-const { v4: uuidv4 } = require("uuid");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
+const { generateNote } = require("../../helper/generateNota");
 const sequelize = require("../../config/db");
 
 module.exports = {
@@ -58,9 +58,29 @@ module.exports = {
 		// 	});
 
 		try {
-			const result = await sequelize.transaction(async (t) => {});
+			const result = await sequelize.transaction(async (t) => {
+				// Generate Serial Note
+				let lastNum = await Incoming.findOne({
+					attributes: ["incoming_no"],
+					order: [["created_at", "DESC"]],
+				});
+
+				let generatedSerial = generateNote("beli", lastNum?.incoming_no);
+				if (!generatedSerial) {
+					throw new Error("Kesalahan pada generate serial Note");
+				}
+
+				// Create Incoming
+				const incomingData = await Incoming.create({
+					...req.body.incoming,
+					incoming_no: generatedSerial,
+				});
+
+				console.log("Incoming Data ", incomingData);
+			});
 		} catch (error) {
-			errorStatusHandler(res, e);
+			console.log("error create roll");
+			errorStatusHandler(res, error);
 		}
 	},
 

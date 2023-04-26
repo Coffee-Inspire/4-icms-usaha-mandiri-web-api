@@ -24,6 +24,8 @@ router.use("/stock", verifyToken, stockRouter);
 router.use("/guest", verifyToken, guestRouter);
 router.use("/supplier", verifyToken, suppliersRouter);
 
+router.use("/incomings", verifyToken, incomingRouter);
+
 // router.use("/incoming", verifyToken, incomingRouter);
 // router.use("/incoming_detail", verifyToken, incomingDetailsRouter);
 

@@ -8,10 +8,12 @@ const Incomings = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
-		purchaseDate: {
+		purchase_date: {
 			type: DataTypes.DATE,
 			allowNull: false,
+			defaultValue: DataTypes.NOW,
 		},
 		incoming_no: {
 			type: DataTypes.STRING,
@@ -26,6 +28,7 @@ const Incomings = sequelize.define(
 		},
 		status: {
 			type: DataTypes.BOOLEAN,
+			defaultValue: false,
 		},
 	},
 	{

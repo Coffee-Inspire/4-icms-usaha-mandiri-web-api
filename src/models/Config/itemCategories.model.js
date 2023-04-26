@@ -8,6 +8,7 @@ const ItemCategories = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
 		category_name: {
 			type: DataTypes.STRING,

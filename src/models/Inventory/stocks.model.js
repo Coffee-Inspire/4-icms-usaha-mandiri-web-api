@@ -10,6 +10,7 @@ const Stocks = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
 		item_name: {
 			type: DataTypes.STRING,

@@ -8,6 +8,7 @@ const Guests = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
 		guest_name: {
 			type: DataTypes.STRING,

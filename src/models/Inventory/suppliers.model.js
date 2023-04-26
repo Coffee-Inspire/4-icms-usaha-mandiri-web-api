@@ -8,6 +8,7 @@ const Suppliers = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
 		supplier_name: {
 			type: DataTypes.STRING,

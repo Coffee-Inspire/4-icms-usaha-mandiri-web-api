@@ -9,6 +9,7 @@ const Outgoings = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
 		receipt_no: {
 			type: DataTypes.STRING,

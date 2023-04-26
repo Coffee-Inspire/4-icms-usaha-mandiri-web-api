@@ -1,5 +1,4 @@
 const { ItemCategories } = require("../../models");
-const { v4: uuidv4 } = require("uuid");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
 
@@ -47,7 +46,6 @@ module.exports = {
 	postCreate: (req, res) => {
 		ItemCategories.create({
 			...req.body,
-			id: uuidv4(),
 		})
 			.then((result) => {
 				successStatusHandler(res, result);

@@ -11,6 +11,7 @@ const IncomingDetails = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
 		incoming_id: {
 			type: DataTypes.CHAR,

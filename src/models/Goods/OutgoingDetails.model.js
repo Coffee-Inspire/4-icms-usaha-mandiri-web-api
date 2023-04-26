@@ -10,6 +10,7 @@ const OutgoingDetails = sequelize.define(
 			type: DataTypes.CHAR,
 			primaryKey: true,
 			allowNull: false,
+			defaultValue: DataTypes.UUIDV4,
 		},
 		outgoing_id: {
 			type: DataTypes.CHAR,

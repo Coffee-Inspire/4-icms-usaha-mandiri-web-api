@@ -1,6 +1,5 @@
 const express = require("express");
 const { Users, Roles } = require("../../models");
-const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
@@ -17,7 +16,6 @@ module.exports = {
 			} else {
 				Users.create({
 					...req.body,
-					id: uuidv4(),
 					password: hashPassword,
 				})
 					.then((result) => {
