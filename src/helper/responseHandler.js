@@ -45,6 +45,10 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(400).send(sendError("Error, you search for unknown field !"));
 			break;
 
+		case "ER_ROW_IS_REFERENCED_2":
+			res.status(400).send(sendError("Tidak dapat menghapus data yang memiliki relasi"));
+			break;
+
 		// auth error
 		case "no auth":
 			res.status(403).send(sendError("No Authorization / Invalid Authorization !"));

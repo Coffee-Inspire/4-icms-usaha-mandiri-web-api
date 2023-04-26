@@ -29,6 +29,25 @@ module.exports = {
 		}
 	},
 
+	// Get Data Source
+	getDataSrouce: (req, res) => {
+		Suppliers.findAll({
+			attributes: [
+				["id", "value"],
+				["supplier_name", "label"],
+			],
+			where: {
+				active_status: true,
+			},
+		})
+			.then((result) => {
+				successStatusHandler(res, result);
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
+	},
+
 	// Get Single Data
 	getOneByID: (req, res) => {
 		const { id } = req.query;

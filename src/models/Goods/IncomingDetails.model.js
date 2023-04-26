@@ -66,6 +66,7 @@ Suppliers.hasMany(IncomingDetails, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 IncomingDetails.belongsTo(Suppliers, {
@@ -75,6 +76,7 @@ IncomingDetails.belongsTo(Suppliers, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 Stocks.hasMany(IncomingDetails, {
@@ -84,6 +86,7 @@ Stocks.hasMany(IncomingDetails, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 IncomingDetails.belongsTo(Stocks, {
@@ -93,6 +96,7 @@ IncomingDetails.belongsTo(Stocks, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 Incomings.hasMany(IncomingDetails, {
@@ -102,6 +106,7 @@ Incomings.hasMany(IncomingDetails, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 IncomingDetails.belongsTo(Incomings, {
@@ -111,6 +116,7 @@ IncomingDetails.belongsTo(Incomings, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 module.exports = IncomingDetails;

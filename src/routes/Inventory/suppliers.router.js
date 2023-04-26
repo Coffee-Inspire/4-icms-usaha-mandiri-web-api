@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
 	getAllRole,
+	getDataSrouce,
 	getOneByID,
 	postCreate,
 	putUpdateData,
@@ -10,6 +11,7 @@ const {
 } = require("../../controllers/Inventory/suppliers.controller");
 
 router.get("/", getAllRole);
+router.get("/datasource", getDataSrouce);
 router.get("/id", getOneByID);
 router.post("/create", postCreate);
 router.put("/update", putUpdateData);

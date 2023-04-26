@@ -97,6 +97,7 @@ Suppliers.hasMany(Stocks, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 Stocks.belongsTo(Suppliers, {
@@ -106,6 +107,7 @@ Stocks.belongsTo(Suppliers, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 ItemCategories.hasMany(Stocks, {
@@ -115,6 +117,7 @@ ItemCategories.hasMany(Stocks, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 Stocks.belongsTo(ItemCategories, {
@@ -124,6 +127,7 @@ Stocks.belongsTo(ItemCategories, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 module.exports = Stocks;

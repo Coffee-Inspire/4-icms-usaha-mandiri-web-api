@@ -31,6 +31,22 @@ module.exports = {
 		}
 	},
 
+	// Get Data Source
+	getDataSrouce: (req, res) => {
+		Stocks.findAll({
+			attributes: [
+				["id", "value"],
+				["item_name", "label"],
+			],
+		})
+			.then((result) => {
+				successStatusHandler(res, result);
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
+	},
+
 	// Get Single Data
 	getOneByID: (req, res) => {
 		const { id } = req.query;
@@ -81,6 +97,7 @@ module.exports = {
 		});
 	},
 
+	// Delete Data
 	deleteData: (req, res) => {
 		const { id } = req.query;
 

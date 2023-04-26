@@ -2,7 +2,7 @@ const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
 
 const ItemCategories = sequelize.define(
-	"Item_categories",
+	"item_categories",
 	{
 		id: {
 			type: DataTypes.CHAR,

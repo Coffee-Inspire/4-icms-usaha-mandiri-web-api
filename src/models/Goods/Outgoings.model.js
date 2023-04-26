@@ -40,6 +40,7 @@ Guests.hasMany(Outgoings, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 Outgoings.belongsTo(Guests, {
@@ -49,6 +50,7 @@ Outgoings.belongsTo(Guests, {
 		freezeTableName: true,
 		underscored: true,
 	},
+	onDelete: "restrict",
 });
 
 module.exports = Outgoings;

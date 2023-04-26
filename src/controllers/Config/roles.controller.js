@@ -14,6 +14,22 @@ module.exports = {
 			});
 	},
 
+	// Get Data Source
+	getDataSrouce: (req, res) => {
+		Roles.findAll({
+			attributes: [
+				["id", "value"],
+				["role_name", "label"],
+			],
+		})
+			.then((result) => {
+				successStatusHandler(res, result);
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
+	},
+
 	// Get Single Data
 	getOneByID: (req, res) => {
 		const { id } = req.query;
