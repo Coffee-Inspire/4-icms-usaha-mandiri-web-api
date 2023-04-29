@@ -47,9 +47,14 @@ const Users = sequelize.define(
 	{
 		indexes: [
 			{
-				name: "username_&_email",
+				name: "username",
 				unique: true,
-				fields: ["username", "email"],
+				fields: ["username"],
+			},
+			{
+				name: "email",
+				unique: true,
+				fields: ["email"],
 			},
 		],
 		freezeTableName: true,

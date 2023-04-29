@@ -13,10 +13,10 @@ const Journal = sequelize.define(
 		transaction_date: {
 			type: DataTypes.DATE,
 			allowNull: false,
+			defaultValue: DataTypes.NOW,
 		},
 		note: {
 			type: DataTypes.TEXT,
-			allowNull: false,
 		},
 		reference_id: {
 			type: DataTypes.CHAR,
@@ -33,6 +33,7 @@ const Journal = sequelize.define(
 		balance: {
 			type: DataTypes.DECIMAL(15),
 			allowNull: false,
+			defaultValue: 0,
 		},
 	},
 	{
@@ -46,6 +47,7 @@ const Journal = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		version: true,
 	}
 );
 

@@ -35,6 +35,7 @@ const IncomingDetails = sequelize.define(
 		received_qty: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
+			defaultValue: 0,
 		},
 		unit: {
 			type: DataTypes.CHAR,
@@ -54,6 +55,7 @@ const IncomingDetails = sequelize.define(
 		},
 	},
 	{
+		indexes: [],
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,

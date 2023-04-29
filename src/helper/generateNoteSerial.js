@@ -1,4 +1,4 @@
-const generateNote = (type, lastNum) => {
+const generateNoteSerial = (type, lastNum) => {
 	// Pembelian:
 	// UM/PBL/23040001
 
@@ -45,5 +45,5 @@ function addZero(format, number) {
 }
 
 module.exports = {
-	generateNote,
+	generateNoteSerial,
 };

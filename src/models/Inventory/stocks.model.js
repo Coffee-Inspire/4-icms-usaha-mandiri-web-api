@@ -29,6 +29,7 @@ const Stocks = sequelize.define(
 		},
 		last_order_date: {
 			type: DataTypes.DATE,
+			defaultValue: DataTypes.NOW,
 		},
 		last_restock_date: {
 			type: DataTypes.DATE,
@@ -36,6 +37,7 @@ const Stocks = sequelize.define(
 		qty: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
+			defaultValue: 0,
 		},
 		unit: {
 			type: DataTypes.CHAR,
@@ -51,7 +53,13 @@ const Stocks = sequelize.define(
 		},
 	},
 	{
-		indexes: [],
+		indexes: [
+			{
+				name: "update_on_duplicate",
+				unique: true,
+				fields: ["item_name", "unit"],
+			},
+		],
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
