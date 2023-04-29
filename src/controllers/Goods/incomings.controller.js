@@ -79,9 +79,6 @@ module.exports = {
 					{ transaction: t }
 				);
 
-				console.log("asdada ", incomingData);
-				console.log("asdada222 ", incomingData.id);
-
 				// 3.Data Detail (Check stock > Create or update stock data > create incoming details)
 				// New Update (Auto Check for Create or Update stock data > create incoming details)
 
@@ -100,6 +97,7 @@ module.exports = {
 				// Tidak bisa dipakai karena update on duplicate, untuk taro id stock ke incoming details nanti tidak sama.
 				const stockData = await Stocks.bulkCreate([...stockBuild], {
 					updateOnDuplicate: ["category_id", "supplier_id", "last_order_date", "price"],
+					transaction: t,
 				});
 
 				let incomingDetailsBuild = await Promise.all(
@@ -112,7 +110,13 @@ module.exports = {
 							},
 						});
 
-						console.log("id_stock ", incomingData.id);
+						if (!id_stock) {
+							stockData.map((itemStock) => {
+								if (itemStock.item_name === item.item_name && itemStock.unit === item.unit) {
+									id_stock = { id: itemStock.id };
+								}
+							});
+						}
 
 						return {
 							incoming_id: incomingData.id,
