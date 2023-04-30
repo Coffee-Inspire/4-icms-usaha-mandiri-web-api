@@ -12,13 +12,11 @@ module.exports = {
 			const result =
 				paginate.search === ""
 					? await Journal.findAndCountAll({
-							include: [Incoming, Outgoing],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
 					: await Journal.scope({ method: ["search", search] }).findAndCountAll({
-							include: [Incoming, Outgoing],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
@@ -34,7 +32,6 @@ module.exports = {
 	getOneByID: (req, res) => {
 		const { id } = req.query;
 		Journal.findOne({
-			include: [Incoming, Outgoing],
 			where: { id },
 		})
 			.then((result) => {

@@ -20,11 +20,7 @@ const Journal = sequelize.define(
 		note: {
 			type: DataTypes.TEXT,
 		},
-		reference_id_incoming: {
-			type: DataTypes.CHAR,
-			allowNull: true,
-		},
-		reference_id_outgoing: {
+		reference_id: {
 			type: DataTypes.CHAR,
 			allowNull: true,
 		},
@@ -56,26 +52,11 @@ const Journal = sequelize.define(
 		scopes: {
 			search(value) {
 				return {
-					include: [
-						{
-							model: Incoming,
-							where: {
-								[Op.or]: [{ incoming_no: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-						{
-							model: Outgoing,
-							where: {
-								[Op.or]: [{ receipt_no: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-					],
 					where: {
 						[Op.or]: [
 							{ transaction_date: { [Op.substring]: value } },
 							{ note: { [Op.substring]: value } },
+							{ reference_id: { [Op.substring]: value } },
 							{ type: { [Op.substring]: value } },
 							{ mutation: { [Op.substring]: value } },
 							{ balance: { [Op.substring]: value } },
@@ -86,33 +67,5 @@ const Journal = sequelize.define(
 		},
 	}
 );
-
-Incoming.hasOne(Journal, {
-	foreignKey: {
-		name: "reference_id_incoming",
-		allowNull: true,
-	},
-});
-
-Journal.belongsTo(Incoming, {
-	foreignKey: {
-		name: "reference_id_incoming",
-		allowNull: true,
-	},
-});
-
-Outgoing.hasOne(Journal, {
-	foreignKey: {
-		name: "reference_id_outgoing",
-		allowNull: true,
-	},
-});
-
-Journal.belongsTo(Outgoing, {
-	foreignKey: {
-		name: "reference_id_outgoing",
-		allowNull: true,
-	},
-});
 
 module.exports = Journal;

@@ -138,7 +138,7 @@ module.exports = {
 				const journalData = await Journal.create(
 					{
 						note: "Pembelian",
-						reference_id_incoming: incomingData.id,
+						reference_id: generatedSerial,
 						type: "DB",
 						mutation: incomingData.total_purchase,
 						balance: currentBalance - incomingData.total_purchase,
