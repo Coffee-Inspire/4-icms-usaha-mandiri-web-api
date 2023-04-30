@@ -64,9 +64,6 @@ async function serverStart() {
 		await Journal.sync({ alter: true });
 		await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
 
-		// Tes
-		// Role.create({ roleName: "tes" });
-
 		console.log("All model were synchronized successfully");
 	} catch (error) {
 		console.error("Unable to connect to the database : ", error);
