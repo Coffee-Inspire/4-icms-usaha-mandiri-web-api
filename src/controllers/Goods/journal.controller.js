@@ -1,4 +1,4 @@
-const { ItemCategories } = require("../../models");
+const { Journal, Incoming, Outgoing } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
 
@@ -11,12 +11,14 @@ module.exports = {
 
 			const result =
 				paginate.search === ""
-					? await ItemCategories.findAndCountAll({
+					? await Journal.findAndCountAll({
+							include: [Incoming, Outgoing],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await ItemCategories.scope({ method: ["search", search] }).findAndCountAll({
+					: await Journal.scope({ method: ["search", search] }).findAndCountAll({
+							include: [Incoming, Outgoing],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
@@ -31,7 +33,8 @@ module.exports = {
 	// Get Single Data
 	getOneByID: (req, res) => {
 		const { id } = req.query;
-		ItemCategories.findOne({
+		Journal.findOne({
+			include: [Incoming, Outgoing],
 			where: { id },
 		})
 			.then((result) => {
@@ -43,9 +46,22 @@ module.exports = {
 	},
 
 	// Create Role
-	postCreate: (req, res) => {
-		ItemCategories.create({
-			...req.body,
+	postCreate: async (req, res) => {
+		let lastBalance = await Journal.findOne({
+			attributes: ["balance"],
+			order: [["created_at", "DESC"]],
+		});
+
+		let currentBalance = lastBalance?.balance;
+		if (!currentBalance) {
+			currentBalance = 0;
+		}
+
+		Journal.create({
+			note: req.body.note,
+			type: req.body.type,
+			mutation: req.body.mutation,
+			balance: currentBalance - req.body.mutation,
 		})
 			.then((result) => {
 				successStatusHandler(res, result);
@@ -61,11 +77,11 @@ module.exports = {
 
 		if (!id) return errorStatusHandler(res, "", "missing_body");
 
-		ItemCategories.findOne({ where: { id } }).then((result) => {
+		Journal.findOne({ where: { id } }).then((result) => {
 			if (!result) {
 				errorStatusHandler(res, "", "not_found");
 			} else {
-				ItemCategories.update({ ...req.body }, { where: { id } })
+				Journal.update({ ...req.body }, { where: { id } })
 					.then((result) => {
 						if (result[0] === 1) {
 							successStatusHandler(res, "Success Update");
@@ -83,7 +99,7 @@ module.exports = {
 	deleteData: (req, res) => {
 		const { id } = req.query;
 
-		ItemCategories.destroy({
+		Journal.destroy({
 			where: { id },
 		})
 			.then((result) => {

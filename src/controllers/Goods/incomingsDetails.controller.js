@@ -1,22 +1,25 @@
-const { IncomingDetails } = require("../../models");
+const { IncomingDetails, Incoming, Stocks, Suppliers } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
+const sequelize = require("../../config/db");
 
 module.exports = {
 	// Get All Data
 	getAllRole: async (req, res) => {
 		try {
 			const { page, limit, sort, filter, search } = req.query;
-			const paginate = await paginationHandler(IncomingDetails, page, limit, sort, filter, search);
+			const paginate = await paginationHandler(page, limit, sort, filter, search);
 
 			const result =
 				paginate.search === ""
 					? await IncomingDetails.findAll({
+							include: [Incoming, Stocks, Suppliers],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
 					: await IncomingDetails.scope({ method: ["search", search] }).findAll({
+							include: [Incoming, Stocks, Suppliers],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
@@ -35,6 +38,7 @@ module.exports = {
 	getOneByID: (req, res) => {
 		const { id } = req.query;
 		IncomingDetails.findOne({
+			include: [Incoming, Stocks, Suppliers],
 			where: { id },
 		})
 			.then((result) => {
@@ -46,37 +50,69 @@ module.exports = {
 	},
 
 	// Create Role
-	postCreate: (req, res) => {
-		IncomingDetails.create({
-			...req.body,
-		})
-			.then((result) => {
-				successStatusHandler(res, result);
-			})
-			.catch((e) => {
-				errorStatusHandler(res, e);
-			});
-	},
+	// postCreate: (req, res) => {
+	// 	IncomingDetails.create({
+	// 		...req.body,
+	// 	})
+	// 		.then((result) => {
+	// 			successStatusHandler(res, result);
+	// 		})
+	// 		.catch((e) => {
+	// 			errorStatusHandler(res, e);
+	// 		});
+	// },
 
 	// Update Data
-	putUpdateData: (req, res) => {
-		const id = req.body.id;
+	putUpdateData: async (req, res) => {
+		try {
+			const id = req.body.id;
 
-		if (!id) return errorStatusHandler(res, "", "missing_body");
+			if (!id) return errorStatusHandler(res, "", "missing_body");
 
-		IncomingDetails.findOne({ where: { id } }).then((result) => {
-			if (!result) {
-				errorStatusHandler(res, "", "not_found");
-			} else {
-				IncomingDetails.update({ ...req.body }, { where: { id } })
-					.then((result) => {
-						successStatusHandler(res, "Success Update");
-					})
-					.catch((e) => {
-						errorStatusHandler(res, e);
-					});
-			}
-		});
+			const result = await sequelize.transaction(async (t) => {
+				let incomingDetailsData = await IncomingDetails.findOne({ where: { id } });
+				if (!incomingDetailsData) {
+					errorStatusHandler(res, "", "not_found");
+					return;
+				}
+
+				// Cek sisa barang apakah minus ?
+				if (incomingDetailsData.receive_remain - req.body.received_qty < 0) {
+					throw new Error("invalid_receive_qty");
+				}
+
+				let incomingDetailsDataUpdate = await IncomingDetails.update(
+					{
+						received_qty: req.body.received_qty,
+						receive_remain: incomingDetailsData.receive_remain - req.body.received_qty,
+						arrive_date: new Date(),
+					},
+					{
+						where: { id },
+						transaction: t,
+					}
+				);
+
+				let stockData = await Stocks.findOne({ where: { id: incomingDetailsData.stock_id } });
+
+				console.log("cek ", stockData.qty + req.body.received_qty);
+
+				let stockDataUpdate = await Stocks.update(
+					{
+						qty: stockData.qty + req.body.received_qty,
+						last_restock_date: new Date(),
+					},
+					{
+						where: { id: incomingDetailsData.stock_id },
+						transaction: t,
+					}
+				);
+			});
+
+			successStatusHandler(res, "Success Update");
+		} catch (error) {
+			errorStatusHandler(res, "", "update_failed");
+		}
 	},
 
 	deleteData: (req, res) => {

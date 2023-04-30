@@ -24,15 +24,17 @@ const sendSuccess = (msg, specialData) => {
 const errorStatusHandler = (res, e, type) => {
 	let typeStatus = type ? type : e?.errors?.[0]?.type;
 
-	console.log("Dev error type status ", typeStatus);
-	console.log("cek 1 ", e?.errors?.[0]?.type);
-	console.log("cek 2 ", e?.original?.code);
+	// console.log("Dev error type status ", typeStatus);
+	// console.log("cek 1 ", e?.errors?.[0]?.type);
+	// console.log("cek 2 ", e?.original?.code);
 
-	console.log("FULL ========================", e);
+	// console.log("FULL ========================", e);
 
 	if (!typeStatus) {
 		typeStatus = e?.original?.code;
 	}
+
+	// console.log("Last Check ", typeStatus);
 
 	switch (typeStatus) {
 		// sequlize error
@@ -75,8 +77,24 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(404).send(sendError("Data yang dicari tidak ada"));
 			break;
 
+		case "update_failed":
+			res.status(500).send(sendError("Error, Gagal mengedit file"));
+			break;
+
 		case "delete_failed":
-			res.status(404).send(sendError("Error, Tidak ada data untuk dihapus"));
+			res.status(500).send(sendError("Error, Gagal menghapus file"));
+			break;
+
+		case "invalid_receive_qty":
+			res.status(400).send(sendError("Error, Barang yang diterima melebihi sisa barang yang belum datang"));
+			break;
+
+		case "invalid_sold_qty":
+			res.status(400).send(sendError("Error, Barang yang dibeli melebihi stock yang tersedia"));
+			break;
+
+		case "different_unit":
+			res.status(500).send(sendError("Server Error, Kesalahan pada pencocokan unit yang dibeli dengan yang di stock"));
 			break;
 
 		default:

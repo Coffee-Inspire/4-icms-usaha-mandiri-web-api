@@ -9,11 +9,11 @@ const Guests = require("./Inventory/guests.model");
 const Suppliers = require("./Inventory/suppliers.model");
 
 // Goods
-const IncomingDetails = require("./Goods/IncomingDetails.model");
-const Incoming = require("./Goods/Incomings.model");
-const OutgoingDetails = require("./Goods/OutgoingDetails.model");
-const Outgoing = require("./Goods/Outgoings.model");
-const Journal = require("./Goods/Journal.model");
+const IncomingDetails = require("./Goods/incomingDetails.model");
+const Incoming = require("./Goods/incomings.model");
+const OutgoingDetails = require("./Goods/outgoingDetails.model");
+const Outgoing = require("./Goods/outgoings.model");
+const Journal = require("./Goods/journal.model");
 
 module.exports = {
 	// Config

@@ -7,7 +7,7 @@ const {
 	postCreate,
 	putUpdateData,
 	deleteData,
-} = require("../../controllers/Goods/incomings.controller");
+} = require("../../controllers/Goods/outgoings.controller");
 
 router.get("/", getAllRole);
 router.get("/id", getOneByID);

@@ -11,6 +11,11 @@ const Outgoings = sequelize.define(
 			allowNull: false,
 			defaultValue: DataTypes.UUIDV4,
 		},
+		sold_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+			defaultValue: DataTypes.NOW,
+		},
 		receipt_no: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -28,9 +33,32 @@ const Outgoings = sequelize.define(
 		},
 	},
 	{
+		indexes: [],
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					include: [
+						{
+							model: Guests,
+							where: {
+								[Op.or]: [{ guest_name: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+					],
+					where: {
+						[Op.or]: [
+							{ receipt_no: { [Op.substring]: value } },
+							{ total_sold: { [Op.substring]: value } },
+							{ note: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
 

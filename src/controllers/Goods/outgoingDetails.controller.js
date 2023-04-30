@@ -1,4 +1,4 @@
-const { ItemCategories } = require("../../models");
+const { OutgoingDetails, Outgoing, Stocks } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
 
@@ -11,12 +11,14 @@ module.exports = {
 
 			const result =
 				paginate.search === ""
-					? await ItemCategories.findAndCountAll({
+					? await OutgoingDetails.findAndCountAll({
+							include: [Outgoing, Stocks],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await ItemCategories.scope({ method: ["search", search] }).findAndCountAll({
+					: await OutgoingDetails.scope({ method: ["search", search] }).findAndCountAll({
+							include: [Outgoing, Stocks],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
@@ -31,7 +33,8 @@ module.exports = {
 	// Get Single Data
 	getOneByID: (req, res) => {
 		const { id } = req.query;
-		ItemCategories.findOne({
+		OutgoingDetails.findOne({
+			include: [Outgoing, Stocks],
 			where: { id },
 		})
 			.then((result) => {
@@ -44,7 +47,7 @@ module.exports = {
 
 	// Create Role
 	postCreate: (req, res) => {
-		ItemCategories.create({
+		OutgoingDetails.create({
 			...req.body,
 		})
 			.then((result) => {
@@ -61,11 +64,11 @@ module.exports = {
 
 		if (!id) return errorStatusHandler(res, "", "missing_body");
 
-		ItemCategories.findOne({ where: { id } }).then((result) => {
+		OutgoingDetails.findOne({ where: { id } }).then((result) => {
 			if (!result) {
 				errorStatusHandler(res, "", "not_found");
 			} else {
-				ItemCategories.update({ ...req.body }, { where: { id } })
+				OutgoingDetails.update({ ...req.body }, { where: { id } })
 					.then((result) => {
 						if (result[0] === 1) {
 							successStatusHandler(res, "Success Update");
@@ -83,7 +86,7 @@ module.exports = {
 	deleteData: (req, res) => {
 		const { id } = req.query;
 
-		ItemCategories.destroy({
+		OutgoingDetails.destroy({
 			where: { id },
 		})
 			.then((result) => {

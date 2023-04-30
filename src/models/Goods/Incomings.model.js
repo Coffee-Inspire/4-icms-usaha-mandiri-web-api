@@ -42,6 +42,20 @@ const Incomings = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					where: {
+						[Op.or]: [
+							{ purchase_date: { [Op.substring]: value } },
+							{ incoming_no: { [Op.substring]: value } },
+							{ total_purchase: { [Op.substring]: value } },
+							{ note: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
 

@@ -1,7 +1,7 @@
 const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
 const Stocks = require("../Inventory/stocks.model.js");
-const Outgoings = require("./Outgoings.model.js");
+const Outgoings = require("./outgoings.model.js");
 
 const OutgoingDetails = sequelize.define(
 	"outgoing_details",
@@ -38,9 +38,40 @@ const OutgoingDetails = sequelize.define(
 		},
 	},
 	{
+		indexes: [],
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					include: [
+						{
+							model: Outgoings,
+							where: {
+								[Op.or]: [{ receipt_no: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+						{
+							model: Stocks,
+							where: {
+								[Op.or]: [{ item_name: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+					],
+					where: {
+						[Op.or]: [
+							{ sold_qty: { [Op.substring]: value } },
+							{ sold_price: { [Op.substring]: value } },
+							{ total_amount: { [Op.substring]: value } },
+							{ unit: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
 

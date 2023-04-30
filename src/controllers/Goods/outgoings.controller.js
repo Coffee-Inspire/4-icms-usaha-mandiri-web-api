@@ -1,4 +1,4 @@
-const { Incoming, IncomingDetails, Stocks, Journal } = require("../../models");
+const { Outgoing, OutgoingDetails, Stocks, Guests, Journal } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
 const { generateNoteSerial } = require("../../helper/generateNoteSerial");
@@ -13,12 +13,14 @@ module.exports = {
 
 			const result =
 				paginate.search === ""
-					? await Incoming.findAndCountAll({
+					? await Outgoing.findAndCountAll({
+							include: [Guests],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await Incoming.scope({ method: ["search", search] }).findAndCountAll({
+					: await Outgoing.scope({ method: ["search", search] }).findAndCountAll({
+							include: [Guests],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
@@ -33,7 +35,8 @@ module.exports = {
 	// Get Single Data
 	getOneByID: (req, res) => {
 		const { id } = req.query;
-		Incoming.findOne({
+		Outgoing.findOne({
+			include: [Guests],
 			where: { id },
 		})
 			.then((result) => {
@@ -49,82 +52,71 @@ module.exports = {
 		try {
 			const result = await sequelize.transaction(async (t) => {
 				// 1.Generate Serial Note
-				let lastNum = await Incoming.findOne({
-					attributes: ["incoming_no"],
+				let lastNum = await Outgoing.findOne({
+					attributes: ["receipt_no"],
 					order: [["created_at", "DESC"]],
 				});
 
-				let generatedSerial = generateNoteSerial("beli", lastNum?.incoming_no);
+				let generatedSerial = generateNoteSerial("jual", lastNum?.incoming_no);
 				if (!generatedSerial) {
 					throw new Error("Kesalahan pada generate serial Note");
 				}
 
-				// 2.Create Incoming
-				const incomingData = await Incoming.create(
+				// 2.Create Outgoing
+				const outgoingData = await Outgoing.create(
 					{
-						...req.body.incoming,
-						incoming_no: generatedSerial,
+						...req.body.outgoing,
+						receipt_no: generatedSerial,
 					},
 					{ transaction: t }
 				);
 
-				// 3.Data Detail (Check stock > Create or update stock data > create incoming details)
-				// New Update (Auto Check for Create or Update stock data > create incoming details)
+				// 3.Reduce Stock qty (Looping Cart)
+				// Check qty is ok ? && unit is same ? > Then Reduce qty
 
-				let stockBuild = req.body.details.map((item) => {
-					return {
-						item_name: item.item_name,
-						category_id: item.category_id,
-						supplier_id: item.supplier_id,
-						last_order_date: new Date(),
-						unit: item.unit,
-						price: item.price,
-						purchase_price: item.purchase_price,
-					};
-				});
-
-				const stockData = await Stocks.bulkCreate([...stockBuild], {
-					updateOnDuplicate: ["category_id", "supplier_id", "last_order_date", "price"],
-					transaction: t,
-				});
-
-				let incomingDetailsBuild = await Promise.all(
-					req.body.details.map(async (item) => {
-						let id_stock = await Stocks.findOne({
-							attributes: ["id"],
-							where: {
-								item_name: item.item_name,
-								unit: item.unit,
-							},
+				let stockCheck = await Promise.all(
+					req.body.cart.map(async (item) => {
+						let stockResult = await Stocks.findOne({
+							where: { id: item.stock_id },
 						});
 
-						if (!id_stock) {
-							stockData.map((itemStock) => {
-								if (itemStock.item_name === item.item_name && itemStock.unit === item.unit) {
-									id_stock = { id: itemStock.id };
-								}
-							});
+						if (stockResult.unit === item.unit) {
+							if (stockResult.qty < item.sold_qty) {
+								throw "invalid_sold_qty";
+							} else {
+								return {
+									...stockResult.dataValues,
+									qty: stockResult.qty - item.sold_qty,
+								};
+							}
+						} else {
+							throw "different_unit";
 						}
-
-						return {
-							incoming_id: incomingData.id,
-							stock_id: id_stock.id,
-							purchase_qty: item.purchase_qty,
-							receive_remain: item.purchase_qty,
-							supplier_id: item.supplier_id,
-							unit: item.unit,
-							note: item.note,
-							total_amount: item.total_amount,
-							purchase_price: item.purchase_price,
-						};
 					})
 				);
 
-				const incomingDetailsData = await IncomingDetails.bulkCreate([...incomingDetailsBuild], {
+				const stockDataUpdate = await Stocks.bulkCreate([...stockCheck], {
+					updateOnDuplicate: ["id", "qty"],
 					transaction: t,
 				});
 
-				// 4.Journal (Get last balance > create data for journal)
+				// 4.Outgoing Details
+				let outgoingDetailsBuild = req.body.cart.map((item) => {
+					return {
+						outgoing_id: outgoingData.id,
+						stock_id: item.stock_id,
+						sold_qty: item.sold_qty,
+						sold_price: item.sold_price,
+						total_amount: item.total_amount,
+						unit: item.unit,
+					};
+				});
+
+				const outgoingDetailsData = await OutgoingDetails.bulkCreate([...outgoingDetailsBuild], {
+					transaction: t,
+				});
+
+				// 5.Journal
 				let lastBalance = await Journal.findOne({
 					attributes: ["balance"],
 					order: [["created_at", "DESC"]],
@@ -135,13 +127,14 @@ module.exports = {
 					currentBalance = 0;
 				}
 
+				// - 0 untuk auto convert ke integer
 				const journalData = await Journal.create(
 					{
 						note: "Pembelian",
-						reference_id_incoming: incomingData.id,
-						type: "DB",
-						mutation: incomingData.total_purchase,
-						balance: currentBalance - incomingData.total_purchase,
+						reference_id_outgoing: outgoingData.id,
+						type: "CR",
+						mutation: outgoingData.total_sold,
+						balance: currentBalance - 0 + (outgoingData.total_sold - 0),
 					},
 					{ transaction: t }
 				);
@@ -149,7 +142,7 @@ module.exports = {
 
 			successStatusHandler(res, "success");
 		} catch (error) {
-			errorStatusHandler(res, error);
+			errorStatusHandler(res, "", error);
 		}
 	},
 
@@ -159,17 +152,11 @@ module.exports = {
 
 		if (!id) return errorStatusHandler(res, "", "missing_body");
 
-		Incoming.findOne({ where: { id } }).then((result) => {
+		Outgoing.findOne({ where: { id } }).then((result) => {
 			if (!result) {
 				errorStatusHandler(res, "", "not_found");
 			} else {
-				Incoming.update(
-					{
-						status: req.body.status,
-						note: req.body.note,
-					},
-					{ where: { id } }
-				)
+				Outgoing.update({ note: req.body.note }, { where: { id } })
 					.then((result) => {
 						if (result[0] === 1) {
 							successStatusHandler(res, "Success Update");
@@ -187,7 +174,7 @@ module.exports = {
 	deleteData: (req, res) => {
 		const { id } = req.query;
 
-		Incoming.destroy({
+		Outgoing.destroy({
 			where: { id },
 		})
 			.then((result) => {

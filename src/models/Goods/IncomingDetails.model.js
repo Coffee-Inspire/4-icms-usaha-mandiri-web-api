@@ -2,7 +2,7 @@ const { DataTypes, Op } = require("sequelize");
 const sequelize = require("../../config/db.js");
 const Suppliers = require("../Inventory/suppliers.model.js");
 const Stocks = require("../Inventory/stocks.model.js");
-const Incomings = require("./Incomings.model.js");
+const Incomings = require("./incomings.model.js");
 
 const IncomingDetails = sequelize.define(
 	"incoming_details",
@@ -59,6 +59,44 @@ const IncomingDetails = sequelize.define(
 		freezeTableName: true,
 		timestamps: true,
 		underscored: true,
+		scopes: {
+			search(value) {
+				return {
+					include: [
+						{
+							model: Incomings,
+							where: {
+								[Op.or]: [{ incoming_no: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+						{
+							model: Stocks,
+							where: {
+								[Op.or]: [{ item_name: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+						{
+							model: Suppliers,
+							where: {
+								[Op.or]: [{ supplier_name: { [Op.substring]: value } }],
+							},
+							required: false,
+						},
+					],
+					where: {
+						[Op.or]: [
+							{ transaction_date: { [Op.substring]: value } },
+							{ note: { [Op.substring]: value } },
+							{ type: { [Op.substring]: value } },
+							{ mutation: { [Op.substring]: value } },
+							{ balance: { [Op.substring]: value } },
+						],
+					},
+				};
+			},
+		},
 	}
 );
 

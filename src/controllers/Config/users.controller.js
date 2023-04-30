@@ -8,7 +8,7 @@ module.exports = {
 	getAllUser: async (req, res) => {
 		try {
 			const { page, limit, sort, filter, search } = req.query;
-			const paginate = await paginationHandler(Users, page, limit, sort, filter, search);
+			const paginate = await paginationHandler(page, limit, sort, filter, search);
 
 			const result =
 				paginate.search === ""
@@ -61,7 +61,11 @@ module.exports = {
 		const updateData = (pass) => {
 			Users.update({ ...req.body, [pass && "password"]: pass }, { where: { id } })
 				.then((result) => {
-					successStatusHandler(res, "Success Update");
+					if (result[0] === 1) {
+						successStatusHandler(res, "Success Update");
+					} else {
+						errorStatusHandler(res, "", "update_failed");
+					}
 				})
 				.catch((e) => {
 					errorStatusHandler(res, e);
