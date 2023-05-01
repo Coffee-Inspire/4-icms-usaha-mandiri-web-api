@@ -4,6 +4,7 @@ const router = express.Router();
 const {
 	getAllRole,
 	getOneByID,
+	getDataSrouce,
 	postCreate,
 	putUpdateData,
 	deleteData,
@@ -11,6 +12,7 @@ const {
 
 router.get("/", getAllRole);
 router.get("/id", getOneByID);
+router.get("/datasource", getDataSrouce);
 router.post("/create", postCreate);
 router.put("/update", putUpdateData);
 router.delete("/delete", deleteData);

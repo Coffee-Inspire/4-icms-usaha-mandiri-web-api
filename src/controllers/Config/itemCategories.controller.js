@@ -42,6 +42,22 @@ module.exports = {
 			});
 	},
 
+	// Get Data Source
+	getDataSrouce: (req, res) => {
+		ItemCategories.findAll({
+			attributes: [
+				["id", "value"],
+				["category_name", "label"],
+			],
+		})
+			.then((result) => {
+				successStatusHandler(res, result);
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
+	},
+
 	// Create Role
 	postCreate: (req, res) => {
 		ItemCategories.create({
