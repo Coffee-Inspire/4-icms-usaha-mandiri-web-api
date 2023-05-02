@@ -33,18 +33,27 @@ module.exports = {
 	},
 
 	// Get Single Data
-	getOneByID: (req, res) => {
-		const { id } = req.query;
-		Outgoing.findOne({
-			include: [Guests, OutgoingDetails],
-			where: { id },
-		})
-			.then((result) => {
-				successStatusHandler(res, result);
-			})
-			.catch((e) => {
-				errorStatusHandler(res, e);
+	getOneByID: async (req, res) => {
+		try {
+			const { id } = req.query;
+
+			let outgoingDetailsData = await OutgoingDetails.findAll({
+				include: [Stocks],
+				where: { outgoing_id: id },
 			});
+
+			let outgoing = await Outgoing.findOne({
+				include: [Guests],
+				where: { id },
+			});
+
+			successStatusHandler(res, {
+				...outgoing.dataValues,
+				outgoing_details: outgoingDetailsData,
+			});
+		} catch (error) {
+			errorStatusHandler(res, error);
+		}
 	},
 
 	// Create Role

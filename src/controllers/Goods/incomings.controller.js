@@ -1,8 +1,9 @@
-const { Incoming, IncomingDetails, Stocks, Journal } = require("../../models");
+const { Incoming, IncomingDetails, Stocks, Journal, Suppliers } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { paginationHandler } = require("../../helper/paginationHandler");
 const { generateNoteSerial } = require("../../helper/generateNoteSerial");
 const sequelize = require("../../config/db");
+const { where } = require("sequelize");
 
 module.exports = {
 	// Get All Data
@@ -31,18 +32,26 @@ module.exports = {
 	},
 
 	// Get Single Data
-	getOneByID: (req, res) => {
-		const { id } = req.query;
-		Incoming.findOne({
-			include: IncomingDetails,
-			where: { id },
-		})
-			.then((result) => {
-				successStatusHandler(res, result);
-			})
-			.catch((e) => {
-				errorStatusHandler(res, e);
+	getOneByID: async (req, res) => {
+		try {
+			const { id } = req.query;
+
+			let incomingDetailsData = await IncomingDetails.findAll({
+				include: [Stocks, Suppliers],
+				where: { incoming_id: id },
 			});
+
+			let incomingData = await Incoming.findOne({
+				where: { id },
+			});
+
+			successStatusHandler(res, {
+				...incomingData.dataValues,
+				incoming_details: incomingDetailsData,
+			});
+		} catch (error) {
+			errorStatusHandler(res, error);
+		}
 	},
 
 	// Create Role
