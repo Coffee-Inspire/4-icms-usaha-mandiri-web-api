@@ -36,7 +36,7 @@ module.exports = {
 	getOneByID: (req, res) => {
 		const { id } = req.query;
 		Outgoing.findOne({
-			include: [Guests],
+			include: [Guests, OutgoingDetails],
 			where: { id },
 		})
 			.then((result) => {
