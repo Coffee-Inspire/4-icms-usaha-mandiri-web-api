@@ -83,7 +83,7 @@ module.exports = {
 
 				let incomingDetailsDataUpdate = await IncomingDetails.update(
 					{
-						received_qty: req.body.received_qty,
+						received_qty: incomingDetailsData.received_qty - 0 + (req.body.received_qty - 0),
 						receive_remain: incomingDetailsData.receive_remain - req.body.received_qty,
 						arrive_date: new Date(),
 					},
@@ -94,8 +94,6 @@ module.exports = {
 				);
 
 				let stockData = await Stocks.findOne({ where: { id: incomingDetailsData.stock_id } });
-
-				console.log("cek ", stockData.qty + req.body.received_qty);
 
 				let stockDataUpdate = await Stocks.update(
 					{
