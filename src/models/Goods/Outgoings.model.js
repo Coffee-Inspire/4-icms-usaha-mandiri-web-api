@@ -22,7 +22,6 @@ const Outgoings = sequelize.define(
 		},
 		guest_id: {
 			type: DataTypes.CHAR,
-			allowNull: false,
 		},
 		total_sold: {
 			type: DataTypes.DECIMAL(15),
@@ -65,21 +64,13 @@ const Outgoings = sequelize.define(
 Guests.hasMany(Outgoings, {
 	foreignKey: {
 		name: "guest_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
 	},
-	onDelete: "restrict",
 });
 
 Outgoings.belongsTo(Guests, {
 	foreignKey: {
 		name: "guest_id",
-		allowNull: false,
-		freezeTableName: true,
-		underscored: true,
 	},
-	onDelete: "restrict",
 });
 
 module.exports = Outgoings;

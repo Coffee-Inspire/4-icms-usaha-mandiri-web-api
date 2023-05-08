@@ -45,6 +45,11 @@ module.exports = {
 				where: { id },
 			});
 
+			if (!incomingDetailsData || !incomingData) {
+				errorStatusHandler(res, "", "ID_Not_Found");
+				return;
+			}
+
 			successStatusHandler(res, {
 				...incomingData.dataValues,
 				incoming_details: incomingDetailsData,
@@ -155,9 +160,11 @@ module.exports = {
 					},
 					{ transaction: t }
 				);
+
+				return { incomingData, incomingDetailsData, journalData };
 			});
 
-			successStatusHandler(res, "success");
+			successStatusHandler(res, result);
 		} catch (error) {
 			errorStatusHandler(res, error);
 		}

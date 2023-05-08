@@ -97,6 +97,10 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(500).send(sendError("Server Error, Kesalahan pada pencocokan unit yang dibeli dengan yang di stock"));
 			break;
 
+		case "ID_Not_Found":
+			res.status(400).send(sendError("Error, Data ID tidak ditemukan"));
+			break;
+
 		default:
 			if (process.env.APP_ENV == "DEV") {
 				console.log("Fatal Error : ", e);

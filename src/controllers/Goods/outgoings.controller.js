@@ -139,7 +139,7 @@ module.exports = {
 				// - 0 untuk auto convert ke integer
 				const journalData = await Journal.create(
 					{
-						note: "Pembelian",
+						note: "Penjualan",
 						reference_id: generatedSerial,
 						type: "CR",
 						mutation: outgoingData.total_sold,
@@ -147,11 +147,14 @@ module.exports = {
 					},
 					{ transaction: t }
 				);
+
+				return { outgoingData, outgoingDetailsData, journalData };
 			});
 
-			successStatusHandler(res, "success");
+			successStatusHandler(res, result);
 		} catch (error) {
-			errorStatusHandler(res, "", error);
+			console.log("error ", error);
+			errorStatusHandler(res, error);
 		}
 	},
 

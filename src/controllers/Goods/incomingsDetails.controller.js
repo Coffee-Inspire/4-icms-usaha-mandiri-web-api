@@ -97,7 +97,7 @@ module.exports = {
 
 				let stockDataUpdate = await Stocks.update(
 					{
-						qty: stockData.qty + req.body.received_qty,
+						qty: stockData.qty - 0 + (req.body.received_qty - 0),
 						last_restock_date: new Date(),
 					},
 					{
