@@ -47,6 +47,11 @@ module.exports = {
 				where: { id },
 			});
 
+			if (!outgoingDetailsData || !outgoing) {
+				errorStatusHandler(res, "", "ID_Not_Found");
+				return;
+			}
+
 			successStatusHandler(res, {
 				...outgoing.dataValues,
 				outgoing_details: outgoingDetailsData,
