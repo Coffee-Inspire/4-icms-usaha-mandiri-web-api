@@ -33,8 +33,11 @@ const errorStatusHandler = (res, e, type) => {
 	if (!typeStatus) {
 		typeStatus = e?.original?.code;
 	}
+	if (!typeStatus) {
+		typeStatus = e;
+	}
 
-	// console.log("Last Check ", typeStatus);
+	console.log("Last Check ", typeStatus);
 
 	switch (typeStatus) {
 		// sequlize error

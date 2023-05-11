@@ -87,6 +87,10 @@ module.exports = {
 
 				// 3.Reduce Stock qty (Looping Cart)
 				// Check qty is ok ? && unit is same ? > Then Reduce qty
+				// + Step 4
+
+				let outgoingDetailsFrontend = [];
+				let outgoingDetailsBuild = [];
 
 				let stockCheck = await Promise.all(
 					req.body.cart.map(async (item) => {
@@ -98,6 +102,25 @@ module.exports = {
 							if (stockResult.qty < item.sold_qty) {
 								throw "invalid_sold_qty";
 							} else {
+								outgoingDetailsFrontend.push({
+									outgoing_id: outgoingData.id,
+									stock_id: item.stock_id,
+									stock: stockResult,
+									sold_qty: item.sold_qty,
+									sold_price: item.sold_price,
+									total_amount: item.total_amount,
+									unit: item.unit,
+								});
+
+								outgoingDetailsBuild.push({
+									outgoing_id: outgoingData.id,
+									stock_id: item.stock_id,
+									sold_qty: item.sold_qty,
+									sold_price: item.sold_price,
+									total_amount: item.total_amount,
+									unit: item.unit,
+								});
+
 								return {
 									...stockResult.dataValues,
 									qty: stockResult.qty - item.sold_qty,
@@ -115,16 +138,16 @@ module.exports = {
 				});
 
 				// 4.Outgoing Details
-				let outgoingDetailsBuild = req.body.cart.map((item) => {
-					return {
-						outgoing_id: outgoingData.id,
-						stock_id: item.stock_id,
-						sold_qty: item.sold_qty,
-						sold_price: item.sold_price,
-						total_amount: item.total_amount,
-						unit: item.unit,
-					};
-				});
+				// let outgoingDetailsBuild = req.body.cart.map((item) => {
+				// 	return {
+				// 		outgoing_id: outgoingData.id,
+				// 		stock_id: item.stock_id,
+				// 		sold_qty: item.sold_qty,
+				// 		sold_price: item.sold_price,
+				// 		total_amount: item.total_amount,
+				// 		unit: item.unit,
+				// 	};
+				// });
 
 				const outgoingDetailsData = await OutgoingDetails.bulkCreate([...outgoingDetailsBuild], {
 					transaction: t,
@@ -153,7 +176,7 @@ module.exports = {
 					{ transaction: t }
 				);
 
-				return { outgoingData, outgoingDetailsData, journalData };
+				return { outgoingData, outgoingDetailsFrontend, journalData };
 			});
 
 			successStatusHandler(res, result);

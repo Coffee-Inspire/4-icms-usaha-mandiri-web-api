@@ -103,10 +103,12 @@ module.exports = {
 					transaction: t,
 				});
 
+				let incomingDetailsFrontend = [];
+
 				let incomingDetailsBuild = await Promise.all(
 					req.body.details.map(async (item) => {
 						let id_stock = await Stocks.findOne({
-							attributes: ["id"],
+							// attributes: ["id"],
 							where: {
 								item_name: item.item_name,
 								unit: item.unit,
@@ -116,10 +118,23 @@ module.exports = {
 						if (!id_stock) {
 							stockData.map((itemStock) => {
 								if (itemStock.item_name === item.item_name && itemStock.unit === item.unit) {
-									id_stock = { id: itemStock.id };
+									id_stock = itemStock;
 								}
 							});
 						}
+
+						incomingDetailsFrontend.push({
+							incoming_id: incomingData.id,
+							stock_id: id_stock.id,
+							stock: id_stock,
+							purchase_qty: item.purchase_qty,
+							receive_remain: item.purchase_qty,
+							supplier_id: item.supplier_id,
+							unit: item.unit,
+							note: item.note,
+							total_amount: item.total_amount,
+							purchase_price: item.purchase_price,
+						});
 
 						return {
 							incoming_id: incomingData.id,
@@ -161,7 +176,7 @@ module.exports = {
 					{ transaction: t }
 				);
 
-				return { incomingData, incomingDetailsData, journalData };
+				return { incomingData, incomingDetailsFrontend, journalData };
 			});
 
 			successStatusHandler(res, result);
