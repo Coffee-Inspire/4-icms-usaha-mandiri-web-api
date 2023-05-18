@@ -30,7 +30,7 @@ const Suppliers = sequelize.define(
 			type: DataTypes.TEXT,
 			allowNull: false,
 		},
-		active_status: {
+		status: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
 			defaultValue: true,

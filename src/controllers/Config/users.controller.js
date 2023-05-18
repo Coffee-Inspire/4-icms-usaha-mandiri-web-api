@@ -1,14 +1,13 @@
 const { Users, Roles } = require("../../models");
 const bcrypt = require("bcrypt");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
-const { paginationHandler } = require("../../helper/paginationHandler");
+const { sortFilterPaginateHandler } = require("../../helper/sortFilterPaginateHandler");
 
 module.exports = {
 	// Get All Data
 	getAllUser: async (req, res) => {
 		try {
-			const { page, limit, sort, filter, search } = req.query;
-			const paginate = await paginationHandler(page, limit, sort, filter, search);
+			const paginate = await sortFilterPaginateHandler(req.query);
 
 			const result =
 				paginate.search === ""
@@ -18,6 +17,9 @@ module.exports = {
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
+							where: {
+								...paginate.status,
+							},
 					  })
 					: await Users.scope({ method: ["search", search] }).findAndCountAll({
 							include: Roles,
@@ -25,6 +27,9 @@ module.exports = {
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
+							where: {
+								...paginate.status,
+							},
 					  });
 
 			successStatusHandler(res, result);

@@ -1,16 +1,14 @@
 const { Incoming, IncomingDetails, Stocks, Journal, Suppliers } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
-const { paginationHandler } = require("../../helper/paginationHandler");
+const { sortFilterPaginateHandler } = require("../../helper/sortFilterPaginateHandler");
 const { generateNoteSerial } = require("../../helper/generateNoteSerial");
 const sequelize = require("../../config/db");
-const { where } = require("sequelize");
 
 module.exports = {
 	// Get All Data
 	getAllRole: async (req, res) => {
 		try {
-			const { page, limit, sort, filter, search } = req.query;
-			const paginate = await paginationHandler(page, limit, sort, filter, search);
+			const paginate = await sortFilterPaginateHandler(req.query);
 
 			const result =
 				paginate.search === ""
@@ -18,11 +16,17 @@ module.exports = {
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
+							where: {
+								...paginate.status,
+							},
 					  })
 					: await Incoming.scope({ method: ["search", search] }).findAndCountAll({
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
+							where: {
+								...paginate.status,
+							},
 					  });
 
 			successStatusHandler(res, result);

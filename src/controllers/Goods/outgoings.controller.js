@@ -1,6 +1,6 @@
 const { Outgoing, OutgoingDetails, Stocks, Guests, Journal } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
-const { paginationHandler } = require("../../helper/paginationHandler");
+const { sortFilterPaginateHandler } = require("../../helper/sortFilterPaginateHandler");
 const { generateNoteSerial } = require("../../helper/generateNoteSerial");
 const sequelize = require("../../config/db");
 
@@ -8,8 +8,7 @@ module.exports = {
 	// Get All Data
 	getAllRole: async (req, res) => {
 		try {
-			const { page, limit, sort, filter, search } = req.query;
-			const paginate = await paginationHandler(page, limit, sort, filter, search);
+			const paginate = await sortFilterPaginateHandler(req.query);
 
 			const result =
 				paginate.search === ""
