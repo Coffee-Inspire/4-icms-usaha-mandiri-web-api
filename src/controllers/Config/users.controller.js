@@ -92,27 +92,27 @@ module.exports = {
 				errorStatusHandler(res, "", "not_found");
 			} else {
 				// IF ADMIN update
-				if (req?.payload?.payload?.role?.role_name === "Administrator") {
-					if (passNew) {
-						hashNewPass();
-					} else {
-						updateData();
-					}
-				} else {
-					bcrypt.compare(passCur, result.password, (err, compareResult) => {
-						if (err) return errorStatusHandler(res, err);
+				// if (req?.payload?.payload?.role?.role_name === "Administrator") {
+				// 	if (passNew) {
+				// 		hashNewPass();
+				// 	} else {
+				// 		updateData();
+				// 	}
+				// } else {
+				bcrypt.compare(passCur, result.password, (err, compareResult) => {
+					if (err) return errorStatusHandler(res, err);
 
-						if (compareResult) {
-							if (passNew) {
-								hashNewPass();
-							} else {
-								updateData();
-							}
+					if (compareResult) {
+						if (passNew) {
+							hashNewPass();
 						} else {
-							errorStatusHandler(res, "", "compare_failed");
+							updateData();
 						}
-					});
-				}
+					} else {
+						errorStatusHandler(res, "", "compare_failed");
+					}
+				});
+				// }
 			}
 		});
 	},
