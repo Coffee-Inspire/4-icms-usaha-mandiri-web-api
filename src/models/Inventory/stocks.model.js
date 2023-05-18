@@ -1,4 +1,4 @@
-const { DataTypes, Op } = require("sequelize");
+const { DataTypes, Op, Sequelize } = require("sequelize");
 const sequelize = require("../../config/db.js");
 const Suppliers = require("./suppliers.model.js");
 const ItemCategories = require("../Config/itemCategories.model.js");
@@ -66,22 +66,7 @@ const Stocks = sequelize.define(
 		scopes: {
 			search(value) {
 				return {
-					include: [
-						{
-							model: ItemCategories,
-							where: {
-								[Op.or]: [{ category_name: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-						{
-							model: Suppliers,
-							where: {
-								[Op.or]: [{ supplier_name: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-					],
+					include: [ItemCategories, Suppliers],
 					where: {
 						[Op.or]: [
 							{ item_name: { [Op.substring]: value } },
@@ -91,6 +76,8 @@ const Stocks = sequelize.define(
 							{ qty: { [Op.substring]: value } },
 							{ unit: { [Op.substring]: value } },
 							{ price: { [Op.substring]: value } },
+							Sequelize.literal("`item_category`.`category_name` LIKE '%" + value + "%'"),
+							Sequelize.literal("`supplier`.`supplier_name` LIKE '%" + value + "%'"),
 						],
 					},
 				};
