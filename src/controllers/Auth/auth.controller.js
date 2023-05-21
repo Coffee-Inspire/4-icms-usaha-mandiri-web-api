@@ -57,7 +57,7 @@ module.exports = {
 									// Remove password
 									const { password, ...payload } = result.get();
 
-									if (!payload.active_status) {
+									if (!payload.status) {
 										return errorStatusHandler(res, "", "user_disabled");
 									}
 
