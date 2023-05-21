@@ -38,7 +38,7 @@ module.exports = {
 				["supplier_name", "label"],
 			],
 			where: {
-				active_status: true,
+				status: true,
 			},
 		})
 			.then((result) => {
