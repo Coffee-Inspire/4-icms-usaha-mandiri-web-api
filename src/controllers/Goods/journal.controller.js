@@ -115,4 +115,21 @@ module.exports = {
 				errorStatusHandler(res, e);
 			});
 	},
+
+	getBalance: (req, res) => {
+		Journal.findOne({
+			attributes: ["balance"],
+			order: [["created_at", "DESC"]],
+		})
+			.then((result) => {
+				if (result) {
+					successStatusHandler(res, result);
+				} else {
+					successStatusHandler(res, { balance: "0" });
+				}
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
+	},
 };
