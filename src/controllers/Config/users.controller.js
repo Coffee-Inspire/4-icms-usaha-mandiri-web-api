@@ -72,6 +72,7 @@ module.exports = {
 		const saltRounds = Number(process.env.SALT) ?? 10;
 
 		if (!id) return errorStatusHandler(res, "", "missing_body");
+		if (!passCur) return errorStatusHandler(res, "", "missing_body");
 
 		const updateData = (pass) => {
 			Users.update({ ...req.body, [pass && "password"]: pass }, { where: { id } })
