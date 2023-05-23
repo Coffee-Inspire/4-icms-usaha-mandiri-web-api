@@ -16,7 +16,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await OutgoingDetails.scope({ method: ["search", search] }).findAndCountAll({
+					: await OutgoingDetails.scope({ method: ["search", paginate.search] }).findAndCountAll({
 							include: [Outgoing, Stocks],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,

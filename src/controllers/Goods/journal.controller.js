@@ -18,7 +18,7 @@ module.exports = {
 								...paginate.journalType,
 							},
 					  })
-					: await Journal.scope({ method: ["search", search] }).findAndCountAll({
+					: await Journal.scope({ method: ["search", paginate.search] }).findAndCountAll({
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,

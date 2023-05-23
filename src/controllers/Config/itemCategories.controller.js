@@ -15,7 +15,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await ItemCategories.scope({ method: ["search", search] }).findAndCountAll({
+					: await ItemCategories.scope({ method: ["search", paginate.search] }).findAndCountAll({
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,

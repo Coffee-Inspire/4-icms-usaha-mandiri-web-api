@@ -2,27 +2,37 @@ const { Users, Roles } = require("../../models");
 const bcrypt = require("bcrypt");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { sortFilterPaginateHandler } = require("../../helper/sortFilterPaginateHandler");
+const { Op } = require("sequelize");
 
 module.exports = {
 	// Get All Data
 	getAllUser: async (req, res) => {
 		try {
 			const paginate = await sortFilterPaginateHandler(req.query);
-
 			const result =
 				paginate.search === ""
 					? await Users.findAndCountAll({
-							include: Roles,
+							include: {
+								model: Roles,
+								where: {
+									...paginate.role,
+								},
+							},
 							attributes: { exclude: ["password"] },
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
 							where: {
-								...paginate.status,
+								[Op.and]: [{ ...paginate.status }],
 							},
 					  })
-					: await Users.scope({ method: ["search", search] }).findAndCountAll({
-							include: Roles,
+					: await Users.scope({ method: ["search", paginate.search] }).findAndCountAll({
+							include: {
+								model: Roles,
+								where: {
+									...paginate.role,
+								},
+							},
 							attributes: { exclude: ["password"] },
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,

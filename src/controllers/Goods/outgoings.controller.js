@@ -18,7 +18,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 					  })
-					: await Outgoing.scope({ method: ["search", search] }).findAndCountAll({
+					: await Outgoing.scope({ method: ["search", paginate.search] }).findAndCountAll({
 							include: [Guests],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
@@ -70,7 +70,7 @@ module.exports = {
 					order: [["created_at", "DESC"]],
 				});
 
-				let generatedSerial = generateNoteSerial("jual", lastNum?.incoming_no);
+				let generatedSerial = generateNoteSerial("jual", lastNum?.receipt_no);
 				if (!generatedSerial) {
 					throw new Error("Kesalahan pada generate serial Note");
 				}

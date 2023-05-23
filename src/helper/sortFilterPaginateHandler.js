@@ -11,6 +11,7 @@ const sortFilterPaginateHandler = async ({
 	qty = "",
 	status = "",
 	journalType = "",
+	role = "",
 }) => {
 	// Offset
 	const offset = (page - 1) * limit;
@@ -58,6 +59,13 @@ const sortFilterPaginateHandler = async ({
 			  }
 			: (journalType = "");
 
+	// Role
+	if (role != "") {
+		role = {
+			role_name: role,
+		};
+	}
+
 	return {
 		page: parseInt(page),
 		limit: parseInt(limit),
@@ -68,6 +76,7 @@ const sortFilterPaginateHandler = async ({
 		qty,
 		status,
 		journalType,
+		role,
 	};
 };
 

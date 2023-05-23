@@ -19,7 +19,7 @@ module.exports = {
 								...paginate.qty,
 							},
 					  })
-					: await Stocks.scope({ method: ["search", search] }).findAndCountAll({
+					: await Stocks.scope({ method: ["search", paginate.search] }).findAndCountAll({
 							// include: [ItemCategories, Suppliers],
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,

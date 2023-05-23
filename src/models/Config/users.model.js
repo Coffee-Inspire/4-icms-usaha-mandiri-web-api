@@ -1,4 +1,4 @@
-const { DataTypes, Op, Model } = require("sequelize");
+const { DataTypes, Op, Sequelize } = require("sequelize");
 const sequelize = require("../../config/db.js");
 const Roles = require("./roles.model.js");
 
@@ -62,16 +62,9 @@ const Users = sequelize.define(
 		underscored: true,
 		scopes: {
 			search(value) {
+				console.log("woke");
 				return {
-					include: [
-						{
-							model: Roles,
-							where: {
-								[Op.or]: [{ role_name: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-					],
+					include: [Roles],
 					where: {
 						[Op.or]: [
 							{ username: { [Op.substring]: value } },
@@ -79,6 +72,7 @@ const Users = sequelize.define(
 							{ email: { [Op.substring]: value } },
 							{ contact: { [Op.substring]: value } },
 							{ address: { [Op.substring]: value } },
+							Sequelize.literal("`role`.`role_name` LIKE '%" + value + "%'"),
 						],
 					},
 				};
