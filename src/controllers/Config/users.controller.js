@@ -67,64 +67,67 @@ module.exports = {
 	// Update Data
 	putUpdateData: (req, res) => {
 		const id = req.body.id;
-		const passCur = req.body.password_current;
-		const passNew = req.body.password_new;
-		const saltRounds = Number(process.env.SALT) ?? 10;
 
 		if (!id) return errorStatusHandler(res, "", "missing_body");
-		if (!passCur) return errorStatusHandler(res, "", "missing_body");
-
-		const updateData = (pass) => {
-			Users.update({ ...req.body, [pass && "password"]: pass }, { where: { id } })
-				.then((result) => {
-					if (result[0] === 1) {
-						successStatusHandler(res, "Success Update");
-					} else {
-						errorStatusHandler(res, "", "update_failed");
-					}
-				})
-				.catch((e) => {
-					errorStatusHandler(res, e);
-				});
-		};
-
-		const hashNewPass = () => {
-			bcrypt.hash(passNew, saltRounds, (err, hashPassword) => {
-				if (err) {
-					errorStatusHandler(res, err);
-				} else {
-					updateData(hashPassword);
-				}
-			});
-		};
 
 		Users.findOne({ where: { id } }).then((result) => {
 			if (!result) {
 				errorStatusHandler(res, "", "not_found");
 			} else {
-				// IF ADMIN update
-				// if (req?.payload?.payload?.role?.role_name === "Administrator") {
-				// 	if (passNew) {
-				// 		hashNewPass();
-				// 	} else {
-				// 		updateData();
-				// 	}
-				// } else {
-				bcrypt.compare(passCur, result.password, (err, compareResult) => {
-					if (err) return errorStatusHandler(res, err);
-
-					if (compareResult) {
-						if (passNew) {
-							hashNewPass();
+				Users.update({ ...req.body }, { where: { id } })
+					.then((result) => {
+						if (result[0] === 1) {
+							successStatusHandler(res, "Success Update");
 						} else {
-							updateData();
+							errorStatusHandler(res, "", "update_failed");
 						}
-					} else {
-						errorStatusHandler(res, "", "compare_failed");
-					}
-				});
-				// }
+					})
+					.catch((e) => {
+						errorStatusHandler(res, e);
+					});
 			}
+		});
+	},
+
+	changePass: (req, res) => {
+		const id = req.payload.id;
+		const passCur = req.body.password_current;
+		const passNew = req.body.password_new;
+		const saltRounds = Number(process.env.SALT) ?? 10;
+
+		if (!passCur || !passNew) return errorStatusHandler(res, "", "missing_body");
+
+		Users.findOne({ where: { id } }).then((result) => {
+			if (!result) {
+				errorStatusHandler(res, "", "not_found");
+				return;
+			}
+
+			bcrypt.compare(passCur, result.password, (err, compareResult) => {
+				if (err) return errorStatusHandler(res, err);
+
+				if (compareResult) {
+					bcrypt.hash(passNew, saltRounds, (err, hashPassword) => {
+						if (err) {
+							errorStatusHandler(res, err);
+						} else {
+							Users.update({ password: hashPassword }, { where: { id } })
+								.then((doneUpdate) => {
+									if (doneUpdate[0] === 1) {
+										successStatusHandler(res, "Success Update");
+									} else {
+										errorStatusHandler(res, "", "update_failed");
+									}
+								})
+								.catch((e) => {
+									errorStatusHandler(res, e);
+								});
+						}
+					});
+				} else {
+					errorStatusHandler(res, "", "compare_failed");
+				}
+			});
 		});
 	},
 

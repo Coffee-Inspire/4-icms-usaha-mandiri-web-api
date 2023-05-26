@@ -36,6 +36,10 @@ const OutgoingDetails = sequelize.define(
 			type: DataTypes.CHAR,
 			allowNull: false,
 		},
+		return_qty: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
 	},
 	{
 		indexes: [],

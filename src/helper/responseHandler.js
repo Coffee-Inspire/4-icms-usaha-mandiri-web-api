@@ -68,7 +68,7 @@ const errorStatusHandler = (res, e, type) => {
 			break;
 
 		case "compare_failed":
-			res.status(403).send(sendError("Password salah"));
+			res.status(403).send(sendError("Password tidak sama"));
 			break;
 
 		// special case

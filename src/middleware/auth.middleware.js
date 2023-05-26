@@ -17,7 +17,7 @@ const verifyToken = (req, res, next) => {
 			// disabled exp time
 			// if (!decoded.exp) return errorStatusHandler(res, "", "no auth");
 
-			req.payload = decoded;
+			req.payload = decoded.payload;
 			next();
 		}
 	});
