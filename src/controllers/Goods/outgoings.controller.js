@@ -31,6 +31,21 @@ module.exports = {
 		}
 	},
 
+	getDataSrouce: (req, res) => {
+		Outgoing.findAll({
+			attributes: [
+				["id", "value"],
+				["receipt_no", "label"],
+			],
+		})
+			.then((result) => {
+				successStatusHandler(res, result);
+			})
+			.catch((e) => {
+				errorStatusHandler(res, e);
+			});
+	},
+
 	// Get Single Data
 	getOneByID: async (req, res) => {
 		try {
@@ -180,7 +195,6 @@ module.exports = {
 
 			successStatusHandler(res, result);
 		} catch (error) {
-			console.log("error ", error);
 			errorStatusHandler(res, error);
 		}
 	},

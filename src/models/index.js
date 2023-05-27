@@ -14,6 +14,7 @@ const Incoming = require("./Goods/incomings.model");
 const OutgoingDetails = require("./Goods/outgoingDetails.model");
 const Outgoing = require("./Goods/outgoings.model");
 const Journal = require("./Goods/journal.model");
+const Return = require("./Goods/return.model");
 
 module.exports = {
 	// Config
@@ -32,4 +33,5 @@ module.exports = {
 	OutgoingDetails,
 	Outgoing,
 	Journal,
+	Return,
 };

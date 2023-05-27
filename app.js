@@ -19,6 +19,7 @@ const {
 	OutgoingDetails,
 	Outgoing,
 	Journal,
+	Return,
 } = require("./src/models/index.js");
 
 app.use(cors());
@@ -62,6 +63,7 @@ async function serverStart() {
 		await OutgoingDetails.sync({ alter: true });
 		await Outgoing.sync({ alter: true });
 		await Journal.sync({ alter: true });
+		await Return.sync({ alter: true });
 		await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
 
 		console.log("All model were synchronized successfully");

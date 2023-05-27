@@ -26,6 +26,10 @@ const sortFilterPaginateHandler = async ({
 			? {
 					status: false,
 			  }
+			: status === "pending"
+			? {
+					status: null,
+			  }
 			: (status = "");
 
 	// Qty

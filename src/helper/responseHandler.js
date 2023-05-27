@@ -80,12 +80,16 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(404).send(sendError("Data yang dicari tidak ada"));
 			break;
 
+		case "create_failed":
+			res.status(500).send(sendError("Error, Gagal membuat data"));
+			break;
+
 		case "update_failed":
-			res.status(500).send(sendError("Error, Gagal mengedit file"));
+			res.status(500).send(sendError("Error, Gagal mengedit data"));
 			break;
 
 		case "delete_failed":
-			res.status(500).send(sendError("Error, Gagal menghapus file"));
+			res.status(500).send(sendError("Error, Gagal menghapus data"));
 			break;
 
 		case "invalid_receive_qty":
@@ -96,12 +100,20 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(400).send(sendError("Error, Barang yang dibeli melebihi stock yang tersedia"));
 			break;
 
+		case "invalid_return_qty":
+			res.status(500).send(sendError("Error, Barang yang direturn melebihi jumlah barang yang dibeli"));
+			break;
+
 		case "different_unit":
 			res.status(500).send(sendError("Server Error, Kesalahan pada pencocokan unit yang dibeli dengan yang di stock"));
 			break;
 
 		case "ID_Not_Found":
 			res.status(400).send(sendError("Error, Data ID tidak ditemukan"));
+			break;
+
+		case "status_fixed":
+			res.status(500).send(sendError("Error, Tidak dapat mengubah status"));
 			break;
 
 		default:

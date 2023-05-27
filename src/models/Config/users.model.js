@@ -62,7 +62,6 @@ const Users = sequelize.define(
 		underscored: true,
 		scopes: {
 			search(value) {
-				console.log("woke");
 				return {
 					include: [Roles],
 					where: {
