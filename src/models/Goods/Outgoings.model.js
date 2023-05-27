@@ -39,15 +39,15 @@ const Outgoings = sequelize.define(
 		scopes: {
 			search(value) {
 				return {
-					include: [
-						{
-							model: Guests,
-							where: {
-								[Op.or]: [{ guest_name: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-					],
+					// include: [
+					// 	{
+					// 		model: Guests,
+					// 		where: {
+					// 			[Op.or]: [{ guest_name: { [Op.substring]: value } }],
+					// 		},
+					// 		required: false,
+					// 	},
+					// ],
 					where: {
 						[Op.or]: [
 							{ receipt_no: { [Op.substring]: value } },

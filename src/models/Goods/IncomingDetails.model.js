@@ -62,29 +62,29 @@ const IncomingDetails = sequelize.define(
 		scopes: {
 			search(value) {
 				return {
-					include: [
-						{
-							model: Incomings,
-							where: {
-								[Op.or]: [{ incoming_no: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-						{
-							model: Stocks,
-							where: {
-								[Op.or]: [{ item_name: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-						{
-							model: Suppliers,
-							where: {
-								[Op.or]: [{ supplier_name: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-					],
+					// include: [
+					// 	{
+					// 		model: Incomings,
+					// 		where: {
+					// 			[Op.or]: [{ incoming_no: { [Op.substring]: value } }],
+					// 		},
+					// 		required: false,
+					// 	},
+					// 	{
+					// 		model: Stocks,
+					// 		where: {
+					// 			[Op.or]: [{ item_name: { [Op.substring]: value } }],
+					// 		},
+					// 		required: false,
+					// 	},
+					// 	{
+					// 		model: Suppliers,
+					// 		where: {
+					// 			[Op.or]: [{ supplier_name: { [Op.substring]: value } }],
+					// 		},
+					// 		required: false,
+					// 	},
+					// ],
 					where: {
 						[Op.or]: [
 							{ transaction_date: { [Op.substring]: value } },

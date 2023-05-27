@@ -1,6 +1,7 @@
-const { DataTypes, Op } = require("sequelize");
+const { DataTypes, Op, Sequelize } = require("sequelize");
 const sequelize = require("../../config/db.js");
 const OutgoingDetails = require("./outgoingDetails.model.js");
+const Outgoings = require("./outgoings.model.js");
 
 const Return = sequelize.define(
 	"return",
@@ -35,16 +36,12 @@ const Return = sequelize.define(
 				return {
 					include: {
 						model: OutgoingDetails,
+						include: {
+							model: Outgoings,
+						},
 					},
 					where: {
-						[Op.or]: [
-							{ transaction_date: { [Op.substring]: value } },
-							{ note: { [Op.substring]: value } },
-							{ reference_id: { [Op.substring]: value } },
-							{ type: { [Op.substring]: value } },
-							{ mutation: { [Op.substring]: value } },
-							{ balance: { [Op.substring]: value } },
-						],
+						[Op.or]: [Sequelize.literal("`outgoing_detail->outgoing`.`receipt_no` LIKE '%" + value + "%'")],
 					},
 				};
 			},

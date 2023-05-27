@@ -49,22 +49,22 @@ const OutgoingDetails = sequelize.define(
 		scopes: {
 			search(value) {
 				return {
-					include: [
-						{
-							model: Outgoings,
-							where: {
-								[Op.or]: [{ receipt_no: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-						{
-							model: Stocks,
-							where: {
-								[Op.or]: [{ item_name: { [Op.substring]: value } }],
-							},
-							required: false,
-						},
-					],
+					// include: [
+					// 	{
+					// 		model: Outgoings,
+					// 		where: {
+					// 			[Op.or]: [{ receipt_no: { [Op.substring]: value } }],
+					// 		},
+					// 		required: false,
+					// 	},
+					// 	{
+					// 		model: Stocks,
+					// 		where: {
+					// 			[Op.or]: [{ item_name: { [Op.substring]: value } }],
+					// 		},
+					// 		required: false,
+					// 	},
+					// ],
 					where: {
 						[Op.or]: [
 							{ sold_qty: { [Op.substring]: value } },
