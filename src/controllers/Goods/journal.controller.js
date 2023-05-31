@@ -59,11 +59,18 @@ module.exports = {
 			currentBalance = 0;
 		}
 
+		let balance;
+		if (req.body.type === "CR") {
+			balance = Number(currentBalance) + Number(req.body.mutation);
+		} else {
+			balance = Number(currentBalance) - Number(req.body.mutation);
+		}
+
 		Journal.create({
 			note: req.body.note,
 			type: req.body.type,
 			mutation: req.body.mutation,
-			balance: currentBalance - req.body.mutation,
+			balance: balance,
 		})
 			.then((result) => {
 				successStatusHandler(res, result);
