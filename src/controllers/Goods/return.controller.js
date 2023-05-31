@@ -12,6 +12,12 @@ module.exports = {
 			const result =
 				paginate.search === ""
 					? await Return.findAndCountAll({
+							include: {
+								model: OutgoingDetails,
+								include: {
+									model: Outgoing,
+								},
+							},
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
 							offset: paginate.offset,
