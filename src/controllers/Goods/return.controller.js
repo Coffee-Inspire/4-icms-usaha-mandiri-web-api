@@ -14,9 +14,7 @@ module.exports = {
 					? await Return.findAndCountAll({
 							include: {
 								model: OutgoingDetails,
-								include: {
-									model: Outgoing,
-								},
+								include: [Outgoing, Stocks],
 							},
 							order: [[paginate.filter, paginate.sort]],
 							limit: paginate.limit,
@@ -70,7 +68,10 @@ module.exports = {
 
 			// Pengecekan jumlah return yang diminta apakah melebihi jumlah barang waktu dibeli
 			if (Number(checkData.return_qty) + Number(return_qty) <= Number(checkData.sold_qty)) {
-				updateData = await OutgoingDetails.update({ return_qty }, { where: { id } });
+				updateData = await OutgoingDetails.update(
+					{ return_qty: Number(checkData.return_qty) + Number(return_qty) },
+					{ where: { id } }
+				);
 				if (updateData[0] == 1) {
 					createData = await Return.create({ outgoingDetail_id: id });
 
