@@ -25,8 +25,9 @@ const {
 app.use(cors());
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));					//For Read x-www.form-urlencoded
-app.use("/stageapi/icmsmandiri", routes);
-app.get("/stageapi/icmsmandiri", (req, res) => {
+let urlMain = process.env.APP_ENV === "PROD" ? "/api/icmsmandiri" : "/stageapi/icmsmandiri";
+app.use(urlMain, routes);
+app.get(urlMain, (req, res) => {
 	res.send("<h1 style='text-align:center; padding-top:3rem'>I'M ALIVE ⊂◉‿◉つ</h1>");
 });
 
