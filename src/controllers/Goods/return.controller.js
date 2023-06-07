@@ -67,13 +67,17 @@ module.exports = {
 			if (!checkData) throw "not_found";
 
 			// Pengecekan jumlah return yang diminta apakah melebihi jumlah barang waktu dibeli
-			if (Number(checkData.return_qty) + Number(return_qty) <= Number(checkData.sold_qty)) {
+			if (
+				Number(checkData.return_qty) + Number(checkData.return_pending) + Number(return_qty) <=
+					Number(checkData.sold_qty) &&
+				return_qty > 0
+			) {
 				updateData = await OutgoingDetails.update(
-					{ return_qty: Number(checkData.return_qty) + Number(return_qty) },
+					{ return_pending: Number(checkData.return_pending) + Number(return_qty) },
 					{ where: { id } }
 				);
 				if (updateData[0] == 1) {
-					createData = await Return.create({ outgoingDetail_id: id });
+					createData = await Return.create({ outgoingDetail_id: id, qty: return_qty });
 
 					listOutgoingDetailsFamilyData = await OutgoingDetails.findAll({
 						include: [Stocks],
@@ -124,51 +128,80 @@ module.exports = {
 
 						// Update Stock
 						const stock_id = outgoingDetailData.stock_id;
-						const return_qty = outgoingDetailData.return_qty;
+						const return_qty = Number(returnData.qty);
 
 						const stockData = await Stocks.findOne({ where: { id: stock_id } });
-						const updateStockData = await Stocks.update(
+						const updateStockUpdate = await Stocks.update(
 							{
-								qty: Number(stockData.qty) + Number(return_qty),
+								qty: Number(stockData.qty) + return_qty,
 							},
 							{ where: { id: stock_id }, transaction: t }
 						);
 
-						if (!updateStockData[0] == 1) throw "update_failed";
+						if (!updateStockUpdate[0] == 1) throw "update_failed";
+
+						// Update OutgoingDetails return qty
+						const outgoingDetailUpdate = await OutgoingDetails.update(
+							{
+								return_qty: Number(outgoingDetailData.return_qty) + return_qty,
+								return_pending: Number(outgoingDetailData.return_pending) - return_qty,
+							},
+							{ where: { id: returnData.outgoingDetail_id }, transaction: t }
+						);
+
+						if (!outgoingDetailUpdate[0] == 1) throw "update_failed";
 
 						// Create Transaction DB
 						const outgoingData = await Outgoing.findOne({ where: { id: outgoingDetailData.outgoing_id } });
 						const sold_price = outgoingDetailData.sold_price;
-						const total_return = Number(sold_price) * Number(return_qty);
+						const total_return = Number(sold_price) * return_qty;
 
-						const currentBalance = await Journal.findOne({
+						const journalLastBalance = await Journal.findOne({
 							attributes: ["balance"],
 							order: [["created_at", "DESC"]],
 						});
 
-						createJournalData = await Journal.create(
+						const currentBalance = Number(journalLastBalance.balance);
+
+						createJournalCreate = await Journal.create(
 							{
 								note: "Retur barang",
 								reference_id: outgoingData.receipt_no,
 								type: "DB",
 								mutation: total_return,
-								balance: Number(currentBalance) - total_return,
+								balance: currentBalance - total_return,
 							},
 							{ transaction: t }
 						);
 
 						return successStatusHandler(res, "Success Update");
 					} else {
-						errorStatusHandler(res, "", "update_failed");
+						return errorStatusHandler(res, "", "update_failed");
 					}
 				});
 			} else {
-				updateData = await Return.update({ status }, { where: { id } });
-				if (updateData[0] == 1) {
-					successStatusHandler(res, "Success Update");
-				} else {
-					errorStatusHandler(res, "", "update_failed");
-				}
+				// Update OutgoingDetail minus pending qty
+				await sequelize.transaction(async (t) => {
+					const return_qty = Number(returnData.qty);
+					const outgoingDetailData = await OutgoingDetails.findOne({ where: { id: returnData.outgoingDetail_id } });
+
+					const outgoingDetailUpdate = await OutgoingDetails.update(
+						{
+							return_pending: Number(outgoingDetailData.return_pending) - return_qty,
+						},
+						{ where: { id: returnData.outgoingDetail_id }, transaction: t }
+					);
+
+					if (!outgoingDetailUpdate[0] == 1) throw "update_failed";
+
+					// Update Return status to False
+					updateData = await Return.update({ status }, { where: { id }, transaction: t });
+					if (updateData[0] == 1) {
+						return successStatusHandler(res, "Success Update");
+					} else {
+						return errorStatusHandler(res, "", "update_failed");
+					}
+				});
 			}
 		} catch (error) {
 			return errorStatusHandler(res, error);

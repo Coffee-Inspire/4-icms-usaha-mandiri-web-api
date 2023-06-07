@@ -40,6 +40,10 @@ const OutgoingDetails = sequelize.define(
 			type: DataTypes.INTEGER,
 			allowNull: true,
 		},
+		return_pending: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
 	},
 	{
 		indexes: [],

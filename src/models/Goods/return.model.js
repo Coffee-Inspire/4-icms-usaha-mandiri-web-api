@@ -26,6 +26,10 @@ const Return = sequelize.define(
 			type: DataTypes.BOOLEAN,
 			allowNull: true,
 		},
+		qty: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
 	},
 	{
 		indexes: [],
