@@ -124,6 +124,7 @@ module.exports = {
 									sold_price: item.sold_price,
 									total_amount: item.total_amount,
 									unit: item.unit,
+									stock: stockResult,
 								});
 
 								outgoingDetailsBuild.push({
@@ -190,7 +191,19 @@ module.exports = {
 					{ transaction: t }
 				);
 
-				return { outgoingData, outgoingDetailsFrontend, journalData };
+				// Get Outgoing Data for Front-end (guest name)
+				let guestData;
+				if (outgoingData.guest_id) {
+					guestData = await Guests.findOne({
+						where: { id: outgoingData.guest_id },
+					});
+				}
+
+				return {
+					outgoingData: { ...outgoingData.dataValues, guest: guestData },
+					outgoingDetailsFrontend,
+					journalData,
+				};
 			});
 
 			successStatusHandler(res, result);
