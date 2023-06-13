@@ -169,15 +169,15 @@ module.exports = {
 				});
 
 				// 5.Journal
-				let lastBalance = await Journal.findOne({
-					attributes: ["balance"],
-					order: [["created_at", "DESC"]],
-				});
+				// let lastBalance = await Journal.findOne({
+				// 	attributes: ["balance"],
+				// 	order: [["created_at", "DESC"]],
+				// });
 
-				let currentBalance = lastBalance?.balance;
-				if (!currentBalance) {
-					currentBalance = 0;
-				}
+				// let currentBalance = lastBalance?.balance;
+				// if (!currentBalance) {
+				// 	currentBalance = 0;
+				// }
 
 				// - 0 untuk auto convert ke integer
 				const journalData = await Journal.create(
@@ -185,8 +185,9 @@ module.exports = {
 						note: "Penjualan",
 						reference_id: generatedSerial,
 						type: "CR",
-						mutation: outgoingData.total_sold,
-						balance: currentBalance - 0 + (outgoingData.total_sold - 0),
+						mutation: Number(outgoingData.total_sold),
+						balance: Number(outgoingData.total_sold),
+						paid_status: true,
 					},
 					{ transaction: t }
 				);

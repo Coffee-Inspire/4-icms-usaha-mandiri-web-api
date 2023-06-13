@@ -159,26 +159,29 @@ module.exports = {
 				});
 
 				// 4.Journal (Get last balance > create data for journal)
-				let lastBalance = await Journal.findOne({
-					attributes: ["balance"],
-					order: [["created_at", "DESC"]],
-				});
+				// let lastBalance = await Journal.findOne({
+				// 	attributes: ["balance"],
+				// 	order: [["created_at", "DESC"]],
+				// });
 
-				let currentBalance = lastBalance?.balance;
-				if (!currentBalance) {
-					currentBalance = 0;
-				}
+				// let currentBalance = lastBalance?.balance;
+				// if (!currentBalance) {
+				// 	currentBalance = 0;
+				// }
 
 				const journalData = await Journal.create(
 					{
 						note: "Pembelian",
 						reference_id: generatedSerial,
 						type: "DB",
-						mutation: incomingData.total_purchase,
-						balance: currentBalance - incomingData.total_purchase,
+						mutation: 0,
+						balance: 0,
+						paid_status: false,
 					},
 					{ transaction: t }
 				);
+				// mutation: Number(incomingData.total_purchase),
+				// balance: 0 - Number(incomingData.total_purchase),
 
 				return { incomingData, incomingDetailsFrontend, journalData };
 			});

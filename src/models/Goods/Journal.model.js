@@ -42,6 +42,17 @@ const Journal = sequelize.define(
 			allowNull: false,
 			defaultValue: 0,
 		},
+		deadline_date: {
+			type: DataTypes.DATE,
+			allowNull: true,
+		},
+		paid_status: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: false,
+			// Pembelian Default FALSE
+			// Penjualan Default TRUE
+		},
 	},
 	{
 		indexes: [],

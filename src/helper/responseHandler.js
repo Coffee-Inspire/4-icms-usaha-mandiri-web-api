@@ -116,6 +116,10 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(500).send(sendError("Error, Tidak dapat mengubah status"));
 			break;
 
+		case "transaction_closed":
+			res.status(400).send(sendError("Transaksi sudah di tutup, tidak dapat melakukan perubahan"));
+			break;
+
 		default:
 			if (process.env.APP_ENV == "DEV") {
 				console.log("Fatal Error : ", e);

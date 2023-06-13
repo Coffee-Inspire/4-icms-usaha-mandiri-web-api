@@ -156,20 +156,20 @@ module.exports = {
 						const sold_price = outgoingDetailData.sold_price;
 						const total_return = Number(sold_price) * return_qty;
 
-						const journalLastBalance = await Journal.findOne({
-							attributes: ["balance"],
-							order: [["created_at", "DESC"]],
-						});
+						// const journalLastBalance = awaitJournal.findOne({
+						// 	attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"]],
+						// 	order: [["created_at", "DESC"]],
+						// });
 
-						const currentBalance = Number(journalLastBalance.balance);
+						// const currentBalance = Number(journalLastBalance.balance);
 
 						createJournalCreate = await Journal.create(
 							{
 								note: "Retur barang",
 								reference_id: outgoingData.receipt_no,
 								type: "DB",
-								mutation: total_return,
-								balance: currentBalance - total_return,
+								mutation: Number(total_return),
+								balance: 0 - Number(total_return),
 							},
 							{ transaction: t }
 						);

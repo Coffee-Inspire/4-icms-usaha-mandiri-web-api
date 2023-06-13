@@ -1,6 +1,8 @@
 const { Journal, Incoming, Outgoing } = require("../../models");
 const { errorStatusHandler, successStatusHandler } = require("../../helper/responseHandler");
 const { sortFilterPaginateHandler } = require("../../helper/sortFilterPaginateHandler");
+const sequelize = require("../../config/db");
+const { Op } = require("sequelize");
 
 module.exports = {
 	// Get All Data
@@ -15,7 +17,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 							where: {
-								...paginate.journalType,
+								[Op.and]: [{ ...paginate.journalType }, { paid_status: true }],
 							},
 					  })
 					: await Journal.scope({ method: ["search", paginate.search] }).findAndCountAll({
@@ -23,7 +25,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 							where: {
-								...paginate.journalType,
+								[Op.and]: [{ ...paginate.journalType }, { paid_status: true }],
 							},
 					  });
 
@@ -37,7 +39,7 @@ module.exports = {
 	getOneByID: (req, res) => {
 		const { id } = req.query;
 		Journal.findOne({
-			where: { id },
+			where: { [Op.and]: [{ id }, { paid_status: true }] },
 		})
 			.then((result) => {
 				successStatusHandler(res, result);
@@ -49,21 +51,26 @@ module.exports = {
 
 	// Create Role
 	postCreate: async (req, res) => {
-		let lastBalance = await Journal.findOne({
-			attributes: ["balance"],
-			order: [["created_at", "DESC"]],
-		});
+		// let lastBalance = await Journal.findOne({
+		// 	attributes: ["balance"],
+		// 	order: [["created_at", "DESC"]],
+		// });
 
-		let currentBalance = lastBalance?.balance;
-		if (!currentBalance) {
-			currentBalance = 0;
-		}
+		// let currentBalance = lastBalance?.balance;
+		// if (!currentBalance) {
+		// 	currentBalance = 0;
+		// }
+
+		// let currentBalance = awaitJournal.findOne({
+		// 	attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"]],
+		// 	order: [["created_at", "DESC"]],
+		// });
 
 		let balance;
 		if (req.body.type === "CR") {
-			balance = Number(currentBalance) + Number(req.body.mutation);
+			balance = Number(req.body.mutation);
 		} else {
-			balance = Number(currentBalance) - Number(req.body.mutation);
+			balance = 0 - Number(req.body.mutation);
 		}
 
 		Journal.create({
@@ -125,14 +132,14 @@ module.exports = {
 
 	getBalance: (req, res) => {
 		Journal.findOne({
-			attributes: ["balance"],
+			attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"]],
 			order: [["created_at", "DESC"]],
 		})
 			.then((result) => {
 				if (result) {
-					successStatusHandler(res, result);
+					successStatusHandler(res, { balance: Number(result.balance) });
 				} else {
-					successStatusHandler(res, { balance: "0" });
+					successStatusHandler(res, { balance: 0 });
 				}
 			})
 			.catch((e) => {

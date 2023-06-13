@@ -30,6 +30,11 @@ const Incomings = sequelize.define(
 			type: DataTypes.BOOLEAN,
 			defaultValue: false,
 		},
+		deadline_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+			defaultValue: false,
+		},
 	},
 	{
 		indexes: [
