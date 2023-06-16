@@ -97,6 +97,10 @@ module.exports = {
 			if (!result) {
 				errorStatusHandler(res, "", "not_found");
 			} else {
+				if (result.paid_status === true) {
+					return errorStatusHandler(res, "transaction_closed");
+				}
+
 				Journal.update({ ...req.body }, { where: { id } })
 					.then((result) => {
 						if (result[0] === 1) {
