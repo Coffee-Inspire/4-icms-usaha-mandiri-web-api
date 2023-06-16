@@ -177,6 +177,7 @@ module.exports = {
 						mutation: 0,
 						balance: 0,
 						paid_status: false,
+						deadline_date: req.body.incoming.deadline_date,
 					},
 					{ transaction: t }
 				);

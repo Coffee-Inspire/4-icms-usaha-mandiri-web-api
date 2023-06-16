@@ -128,7 +128,6 @@ module.exports = {
 					{
 						mutation,
 						balance: 0 - mutation,
-						paid_status: true,
 					},
 					{
 						where: { id: journalData.id },
