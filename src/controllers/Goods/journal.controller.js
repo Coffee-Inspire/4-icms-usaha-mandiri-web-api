@@ -17,7 +17,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 							where: {
-								[Op.and]: [{ ...paginate.journalType }, { paid_status: true }],
+								[Op.and]: [{ ...paginate.journalType }, { [Op.not]: [{ mutation: 0 }] }],
 							},
 					  })
 					: await Journal.scope({ method: ["search", paginate.search] }).findAndCountAll({
@@ -25,7 +25,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 							where: {
-								[Op.and]: [{ ...paginate.journalType }, { paid_status: true }],
+								[Op.and]: [{ ...paginate.journalType }, { [Op.not]: [{ mutation: 0 }] }],
 							},
 					  });
 
@@ -39,7 +39,7 @@ module.exports = {
 	getOneByID: (req, res) => {
 		const { id } = req.query;
 		Journal.findOne({
-			where: { [Op.and]: [{ id }, { paid_status: true }] },
+			where: { [Op.and]: [{ id }, { [Op.not]: [{ mutation: 0 }] }] },
 		})
 			.then((result) => {
 				successStatusHandler(res, result);
