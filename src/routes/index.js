@@ -19,6 +19,8 @@ const outgoingDetailsRouter = require("./Goods/outgoingDetails.router");
 const journalRouter = require("./Goods/journal.router");
 const returnRouter = require("./Goods/return.router");
 
+const infoRouter = require("./Info/info.router");
+
 router.use("/auth", authRouter);
 router.use("/user", verifyToken, usersRouter);
 router.use("/role", verifyToken, roleRouter);
@@ -34,6 +36,8 @@ router.use("/outgoings", verifyToken, outgoingRouter);
 router.use("/outgoingDetails", verifyToken, outgoingDetailsRouter);
 router.use("/journal", verifyToken, journalRouter);
 router.use("/return", verifyToken, returnRouter);
+
+router.use("/info", verifyToken, infoRouter);
 
 // Develop Only
 // router.use("/tHisFoRDevELoPeR/auth", authRouter);

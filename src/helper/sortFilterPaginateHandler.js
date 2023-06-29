@@ -12,6 +12,9 @@ const sortFilterPaginateHandler = async ({
 	status = "",
 	journalType = "",
 	role = "",
+
+	startDate = new Date("0000"),
+	endDate = new Date(),
 }) => {
 	// Offset
 	const offset = (page - 1) * limit;
@@ -81,6 +84,9 @@ const sortFilterPaginateHandler = async ({
 		status,
 		journalType,
 		role,
+
+		startDate,
+		endDate,
 	};
 };
 
