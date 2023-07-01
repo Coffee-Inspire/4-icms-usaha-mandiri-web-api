@@ -78,6 +78,8 @@ module.exports = {
 			type: req.body.type,
 			mutation: req.body.mutation,
 			balance: balance,
+			deadline_date: req.body.deadline_date,
+			paid_status: req.body.paid_status,
 		})
 			.then((result) => {
 				successStatusHandler(res, result);

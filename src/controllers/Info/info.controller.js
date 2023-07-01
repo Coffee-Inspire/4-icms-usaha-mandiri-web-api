@@ -70,6 +70,7 @@ module.exports = {
 							},
 						},
 						{ paid_status: 0 },
+						{ [Op.not]: [{ mutation: 0 }] },
 					],
 				},
 			});
