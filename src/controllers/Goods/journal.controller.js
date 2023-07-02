@@ -85,7 +85,7 @@ module.exports = {
 			balance: balance,
 			deadline_date: req.body.deadline_date,
 			paid_status: req.body.paid_status,
-			[req.body.paid_status === true && "paid_date"]: new Date(),
+			[req.body.paid_status === true && "paid_date"]: req.body.paid_date || new Date(),
 		})
 			.then((result) => {
 				successStatusHandler(res, result);

@@ -170,6 +170,8 @@ module.exports = {
 								type: "DB",
 								mutation: Number(total_return),
 								balance: 0 - Number(total_return),
+								paid_status: true,
+								paid_date: new Date(),
 							},
 							{ transaction: t }
 						);
