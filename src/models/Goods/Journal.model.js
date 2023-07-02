@@ -53,6 +53,10 @@ const Journal = sequelize.define(
 			// Pembelian Default FALSE
 			// Penjualan Default TRUE
 		},
+		paid_date: {
+			type: DataTypes.DATE,
+			allowNull: true,
+		},
 	},
 	{
 		indexes: [],

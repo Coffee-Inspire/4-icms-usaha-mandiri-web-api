@@ -67,11 +67,16 @@ module.exports = {
 		// });
 
 		let balance;
-		if (req.body.type === "CR") {
-			balance = Number(req.body.mutation);
-		} else {
-			balance = 0 - Number(req.body.mutation);
-		}
+		// if (req.body.type === "CR") {
+		// 	console.log("cr");
+		balance = Number(req.body.mutation);
+		// } else {
+		// 	console.log("db");
+		// 	balance = req.body.mutation;
+		// 	console.log(balance);
+		// }
+
+		console.log(balance);
 
 		Journal.create({
 			note: req.body.note,
@@ -80,6 +85,7 @@ module.exports = {
 			balance: balance,
 			deadline_date: req.body.deadline_date,
 			paid_status: req.body.paid_status,
+			[req.body.paid_status === true && "paid_date"]: new Date(),
 		})
 			.then((result) => {
 				successStatusHandler(res, result);
@@ -103,7 +109,13 @@ module.exports = {
 					return errorStatusHandler(res, "transaction_closed");
 				}
 
-				Journal.update({ ...req.body }, { where: { id } })
+				Journal.update(
+					{
+						paid_status: req.body.paid_status,
+						paid_date: req.body.paid_status === true ? new Date() : null,
+					},
+					{ where: { id } }
+				)
 					.then((result) => {
 						if (result[0] === 1) {
 							successStatusHandler(res, "Success Update");

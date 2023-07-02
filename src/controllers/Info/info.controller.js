@@ -149,7 +149,7 @@ module.exports = {
 			const currentProfit = await Journal.findOne({
 				attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"]],
 				where: {
-					createdAt: {
+					paid_date: {
 						[Op.between]: [start, end],
 					},
 				},
@@ -194,18 +194,18 @@ module.exports = {
 			endDate.setHours(23, 59, 59);
 
 			const profitData = await Journal.findAll({
-				attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"], "created_at"],
+				attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"], "paid_date"],
 				where: {
-					createdAt: {
+					paid_date: {
 						[Op.between]: [startDate, endDate],
 					},
 				},
-				group: [sequelize.fn("date", sequelize.col("created_at"))],
+				group: [sequelize.fn("date", sequelize.col("paid_date"))],
 				raw: true,
 			});
 
 			let profitFormatData = profitData.map((item) => {
-				date = item.created_at.toLocaleDateString("es-CL");
+				date = item.paid_date.toLocaleDateString("es-CL");
 				value = item.balance;
 				return { date, value };
 			});
