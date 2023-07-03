@@ -227,17 +227,11 @@ module.exports = {
 			// 	raw: true,
 			// });
 
-			// const profitData = await sequelize.query(`select date, sum(balance) from
-			// (select paid_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'DB' and paid_date is not null group by date(paid_date)
-			// union
-			// select transaction_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'CR' group by date(transaction_date)) t
-			// group by date(date)`);
-
 			const profitData = await sequelize.query(
 				`select date, sum(balance) as balance from 
-			(select paid_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'DB' and paid_date is not null group by date(paid_date)
+			(select paid_date as 'date', sum(balance) as 'balance' from journal where type = 'DB' and paid_date is not null group by date(paid_date)
 			union
-			select transaction_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'CR' group by date(transaction_date)) t
+			select transaction_date as 'date', sum(balance) as 'balance' from journal where type = 'CR' group by date(transaction_date)) t
 			group by date(date)`,
 				{
 					type: sequelize.QueryTypes.SELECT,
