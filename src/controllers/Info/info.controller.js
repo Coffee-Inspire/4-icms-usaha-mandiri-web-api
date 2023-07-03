@@ -146,17 +146,40 @@ module.exports = {
 			const start = new Date().setHours(0, 0, 0);
 			const end = new Date().setHours(23, 59, 59);
 
-			const currentProfit = await Journal.findOne({
+			const currentCR = await Journal.findOne({
 				attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"]],
 				where: {
-					paid_date: {
-						[Op.between]: [start, end],
-					},
+					[Op.and]: [
+						{
+							transaction_date: {
+								[Op.between]: [start, end],
+							},
+						},
+						{ type: "CR" },
+					],
 				},
+				raw: true,
 			});
 
+			const currentDB = await Journal.findOne({
+				attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"]],
+				where: {
+					[Op.and]: [
+						{
+							paid_date: {
+								[Op.between]: [start, end],
+							},
+						},
+						{ type: "DB" },
+					],
+				},
+				raw: true,
+			});
+
+			const currentProfit = Number(currentCR.balance) + Number(currentDB.balance);
+
 			successStatusHandler(res, {
-				value: currentProfit.balance,
+				value: currentProfit,
 			});
 		} catch (e) {
 			errorStatusHandler(res, e);
@@ -193,24 +216,42 @@ module.exports = {
 			endDate = new Date(endDate);
 			endDate.setHours(23, 59, 59);
 
-			const profitData = await Journal.findAll({
-				attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"], "paid_date"],
-				where: {
-					paid_date: {
-						[Op.between]: [startDate, endDate],
-					},
-				},
-				group: [sequelize.fn("date", sequelize.col("paid_date"))],
-				raw: true,
-			});
+			// const profitData = await Journal.findAll({
+			// 	attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"], "paid_date"],
+			// 	where: {
+			// 		paid_date: {
+			// 			[Op.between]: [startDate, endDate],
+			// 		},
+			// 	},
+			// 	group: [sequelize.fn("date", sequelize.col("paid_date"))],
+			// 	raw: true,
+			// });
+
+			// const profitData = await sequelize.query(`select date, sum(balance) from
+			// (select paid_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'DB' and paid_date is not null group by date(paid_date)
+			// union
+			// select transaction_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'CR' group by date(transaction_date)) t
+			// group by date(date)`);
+
+			const profitData = await sequelize.query(
+				`select date, sum(balance) as balance from 
+			(select paid_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'DB' and paid_date is not null group by date(paid_date)
+			union
+			select transaction_date as 'date', sum(balance) as 'balance' from icms_usaha_mandiri.journal where type = 'CR' group by date(transaction_date)) t
+			group by date(date)`,
+				{
+					type: sequelize.QueryTypes.SELECT,
+				}
+			);
 
 			let profitFormatData = profitData.map((item) => {
-				date = item.paid_date.toLocaleDateString("es-CL");
+				date = item.date.toLocaleDateString("es-CL");
 				value = item.balance;
 				return { date, value };
 			});
 
 			successStatusHandler(res, profitFormatData);
+			// successStatusHandler(res, 0);
 		} catch (e) {
 			errorStatusHandler(res, e);
 		}

@@ -188,7 +188,6 @@ module.exports = {
 						mutation: Number(outgoingData.total_sold),
 						balance: Number(outgoingData.total_sold),
 						paid_status: true,
-						paid_date: new Date(),
 					},
 					{ transaction: t }
 				);
