@@ -4,6 +4,7 @@ const { Sequelize } = require("sequelize");
 const database = process.env.DATABASE_NAME;
 const username = process.env.DATABASE_USER;
 const password = process.env.DATABASE_PASS;
+const host = process.env.DATABASE_HOST || "localhost";
 
 const sequelize = new Sequelize(database, username, password, {
 	host: "localhost",
