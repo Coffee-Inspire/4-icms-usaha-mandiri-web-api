@@ -84,7 +84,7 @@ module.exports = {
 			note: req.body.note,
 			type: req.body.type,
 			mutation: req.body.mutation,
-			balance: balance,
+			balance: req.body.type === "DB" ? -Math.abs(balance) : balance,
 			deadline_date: req.body.deadline_date,
 			paid_status: req.body.paid_status,
 			[req.body.paid_status === true && "paid_date"]: req.body.paid_date || new Date(),
