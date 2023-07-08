@@ -123,7 +123,7 @@ module.exports = {
 					[Op.and]: [
 						{ type: "DB" },
 						{
-							createdAt: {
+							paid_date: {
 								[Op.between]: [paginate.startDate, paginate.endDate],
 							},
 						},
