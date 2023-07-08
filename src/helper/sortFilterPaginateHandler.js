@@ -43,7 +43,7 @@ const sortFilterPaginateHandler = async ({
 			  }
 			: qty === "limited"
 			? {
-					qty: { [Op.lte]: 80 },
+					qty: { [Op.between]: [1, 80] },
 			  }
 			: qty === "empty"
 			? {
