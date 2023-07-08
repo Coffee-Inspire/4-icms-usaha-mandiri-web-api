@@ -143,8 +143,8 @@ module.exports = {
 	// Get Current Profit SUM
 	getCurrentProfit: async (req, res) => {
 		try {
-			const start = new Date();
-			const end = new Date();
+			const start = new Date().setHours(0, 0, 0);
+			const end = new Date().setHours(23, 59, 59);
 
 			const currentCR = await Journal.findOne({
 				attributes: [[sequelize.fn("sum", sequelize.col("balance")), "balance"]],
