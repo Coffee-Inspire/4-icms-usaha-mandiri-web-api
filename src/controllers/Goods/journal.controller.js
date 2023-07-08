@@ -10,6 +10,8 @@ module.exports = {
 		try {
 			const paginate = await sortFilterPaginateHandler(req.query);
 
+			console.log(req.query);
+
 			const result =
 				paginate.search === ""
 					? await Journal.findAndCountAll({
@@ -17,7 +19,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 							where: {
-								[Op.and]: [{ ...paginate.journalType }, { [Op.not]: [{ mutation: 0 }] }],
+								[Op.and]: [{ ...paginate.journalType }, { ...paginate.paidStatus }, { [Op.not]: [{ mutation: 0 }] }],
 							},
 					  })
 					: await Journal.scope({ method: ["search", paginate.search] }).findAndCountAll({
@@ -25,7 +27,7 @@ module.exports = {
 							limit: paginate.limit,
 							offset: paginate.offset,
 							where: {
-								[Op.and]: [{ ...paginate.journalType }, { [Op.not]: [{ mutation: 0 }] }],
+								[Op.and]: [{ ...paginate.journalType }, { ...paginate.paidStatus }, { [Op.not]: [{ mutation: 0 }] }],
 							},
 					  });
 

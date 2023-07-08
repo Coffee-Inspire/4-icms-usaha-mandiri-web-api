@@ -12,6 +12,7 @@ const sortFilterPaginateHandler = async ({
 	status = "",
 	journalType = "",
 	role = "",
+	paidStatus = "",
 
 	startDate = new Date("0000"),
 	endDate = new Date(),
@@ -66,6 +67,18 @@ const sortFilterPaginateHandler = async ({
 			  }
 			: (journalType = "");
 
+	// Paid Status
+	paidStatus =
+		paidStatus === "true"
+			? {
+					paid_status: true,
+			  }
+			: paidStatus === "false"
+			? {
+					paid_status: false,
+			  }
+			: (paidStatus = "");
+
 	// Role
 	if (role != "") {
 		role = {
@@ -84,6 +97,7 @@ const sortFilterPaginateHandler = async ({
 		status,
 		journalType,
 		role,
+		paidStatus,
 
 		startDate,
 		endDate,
