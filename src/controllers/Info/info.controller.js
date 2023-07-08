@@ -229,9 +229,9 @@ module.exports = {
 
 			const profitData = await sequelize.query(
 				`select date, sum(balance) as balance from 
-			(select paid_date as 'date', sum(balance) as 'balance' from journal where type = 'DB' and paid_date is not null group by date(paid_date)
+			(select paid_date as 'date', sum(balance) as 'balance' from journal where type = 'DB' and paid_date is not null and paid_date between date('${startDate.toISOString()}') and date('${endDate.toISOString()}') group by date(paid_date)
 			union
-			select transaction_date as 'date', sum(balance) as 'balance' from journal where type = 'CR' group by date(transaction_date)) t
+			select transaction_date as 'date', sum(balance) as 'balance' from journal where type = 'CR' and transaction_date between date('${startDate.toISOString()}') and date('${endDate.toISOString()}') group by date(transaction_date)) t
 			group by date(date)`,
 				{
 					type: sequelize.QueryTypes.SELECT,
