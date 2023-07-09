@@ -103,7 +103,7 @@ module.exports = {
 				});
 
 				const stockData = await Stocks.bulkCreate([...stockBuild], {
-					updateOnDuplicate: ["category_id", "supplier_id", "last_order_date", "price"],
+					updateOnDuplicate: ["category_id", "supplier_id", "last_order_date", "price", "purchase_price"],
 					transaction: t,
 				});
 
