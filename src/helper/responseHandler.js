@@ -68,7 +68,7 @@ const errorStatusHandler = (res, e, type) => {
 			break;
 
 		case "compare_failed":
-			res.status(403).send(sendError("Password tidak sama"));
+			res.status(403).send(sendError("Kata sandi lama tidak sesuai, mohon periksa kembali kata sandi yang digunakan"));
 			break;
 
 		// special case
@@ -121,7 +121,7 @@ const errorStatusHandler = (res, e, type) => {
 			break;
 
 		case "super_user_delete":
-			res.status(400).send(sendError("Tidak dapat mengedit / menghapus User"));
+			res.status(400).send(sendError("Tidak dapat merubah akun statis"));
 			break;
 
 		default:
