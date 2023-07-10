@@ -68,6 +68,7 @@ module.exports = {
 	putUpdateData: (req, res) => {
 		const id = req.body.id;
 
+		if (Number(id) === 1) return errorStatusHandler(res, "super_user_delete");
 		if (!id) return errorStatusHandler(res, "", "missing_body");
 
 		Users.findOne({ where: { id } }).then((result) => {
@@ -95,6 +96,9 @@ module.exports = {
 		const passNew = req.body.password_new;
 		const saltRounds = Number(process.env.SALT) ?? 10;
 
+		console.log("cek saja ", Number(id));
+		console.log("cek lagi ", Number(id) === 1);
+		if (Number(id) === 1) return errorStatusHandler(res, "super_user_delete");
 		if (!passCur || !passNew) return errorStatusHandler(res, "", "missing_body");
 
 		Users.findOne({ where: { id } }).then((result) => {
@@ -133,6 +137,8 @@ module.exports = {
 
 	deleteData: (req, res) => {
 		const { id } = req.query;
+
+		if (Number(id) === 1) return errorStatusHandler(res, "super_user_delete");
 
 		Users.destroy({
 			where: { id },

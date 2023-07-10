@@ -86,6 +86,11 @@ const sortFilterPaginateHandler = async ({
 		};
 	}
 
+	// ============================================================ FILTER ============================================================
+	if (filter === "return_receipt_no") {
+		filter = sequelize.col("outgoing_detail.outgoing.receipt_no");
+	}
+
 	return {
 		page: parseInt(page),
 		limit: parseInt(limit),

@@ -120,6 +120,10 @@ const errorStatusHandler = (res, e, type) => {
 			res.status(400).send(sendError("Transaksi sudah di tutup, tidak dapat melakukan perubahan"));
 			break;
 
+		case "super_user_delete":
+			res.status(400).send(sendError("Tidak dapat mengedit / menghapus User"));
+			break;
+
 		default:
 			if (process.env.APP_ENV == "DEV") {
 				console.log("Fatal Error : ", e);
